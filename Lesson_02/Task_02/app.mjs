@@ -43,7 +43,7 @@ const server = createServer((req, res) => {
     }
 
   } else {
-    res.end('Не знайдено.')
+    res.end('Запит не вірний.')
   }
 })
 
