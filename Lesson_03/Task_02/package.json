@@ -1,6 +1,7 @@
 {
-  "name": "task_01",
+  "name": "task_02",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -12,6 +13,5 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.1"
-  },
-  "description": ""
+  }
 }
