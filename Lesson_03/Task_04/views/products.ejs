@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Продукти</title>
+</head>
+<body>
+    <a href="/">На головну</a>
+    
+    <h1>Список продуктів</h1>
+    
+    <ul>
+        <% products.forEach(product => { %>
+            <li><%= product.name %> - <%= product.price %> грн</li>
+        <% }) %>
+    </ul>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Назва продукту</th>
+                <th>Ціна</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% products.forEach(product => { %>
+                <tr>
+                    <td><%= product.name %></td>
+                    <td><%= product.price %> грн</td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>
