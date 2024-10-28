@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title><%= car ? 'Оновити автомобіль' : 'Додати автомобіль' %></title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <script src="/javascripts/HandlerImageFiles.js"></script>
+</head>
+  <body class="body">
+    <%-include('sections/header.ejs')%>
+
+    <div class="container">
+      <h1 class="title"><%= car ? 'Оновити автомобіль' : 'Додати новий автомобіль' %></h1>
+      <form class="form" action="/cars/add/<%= car?.id%>" enctype="multipart/form-data" method="POST"
+        <label class="form__label" for="brand">Марка:</label>
+        <input class="form__input" type="text" name="brand" value="<%= car?.brand%>" required/>
+        
+        <label class="form__label" for="year">Рік випуску:</label>
+        <input class="form__input" type="number" name="year"  value="<%= car?.year%>" required/>
+        
+        <label class="form__label" for="number">Номер:</label>
+        <input class="form__input" type="text" name="number" value="<%= car?.number%>" required/>
+
+        <label class="form__label" for="description">Опис:</label>
+        <textarea class="form__textarea" name="description" required><%= car?.description %></textarea>
+        
+        <label class="form__label" for="image">Зображення:</label>
+        <input class="form__input" type="file" id="carImage" name="carImage" accept="image/*"
+          onchange="handleFileSelect(event, '#imgPreview')"
+          /> 
+        <img
+          id="imgPreview"
+          src="<%= car && car.image ? '/images/' + car.image : '/images/photo-not-available.jpg' %>"
+          alt="Car Image Preview"
+          class="car-image"/>
+        <button class="form__button" type="submit"><%= car ? 'Оновити' : 'Додати' %></button>
+      </form>
+    </div>
+  </body>
+</html>
