@@ -71,6 +71,7 @@ class CarsController {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const car = req.body
+      const locations = await LocationService.getLocationsList()
       car.id = req.params.id
       req.file ? car.image = req.file.filename : car.image = req.body.existingImagePath
       const errorMessages = {}
@@ -82,6 +83,7 @@ class CarsController {
       })
       return res.status(400).render('cars/carForm', {
         car,
+        locations,
         errors: errorMessages,
       })
     }
