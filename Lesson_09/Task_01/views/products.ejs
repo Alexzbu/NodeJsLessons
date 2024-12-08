@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Products</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Products</h1>
+    <p>Hi, <strong>
+        <%= username ? username : 'Guest' %>
+      </strong>!</p>
+    <div>
+      <% if (username) { %>
+        <a href="/products/add" class="btn">Add product</a>
+        <% } else { %>
+          <a href="/login" class="btn">Sign in</a>
+
+          <% } %>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(product=> { %>
+          <tr>
+            <td>
+              <%= product.name %>
+            </td>
+            <td>
+              <%= product.price %> USD
+            </td>
+            <td>
+              <%= product.quantity %>
+            </td>
+            <td>
+              <a class="button-delete" href="/products/delete/<%= product.id %>">Delete</a>
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <form action="/login" method="post">
+      <label for="username">User name:</label>
+      <input type="text" id="username" name="username" placeholder="Enter your username" />
+      <% if (error) { %>
+        <div class="alert"><%= error %></div>
+      <% } %>
+      <button type="submit">Sign in</button>
+    </form>
+  </div>
+</body>
+</html>
