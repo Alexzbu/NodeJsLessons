@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Courses</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="body">
+  <header>
+    <%- include('../sections/header.ejs')%>
+      <h1>Available Courses</h1>
+  </header>
+  <div class="container">
+    <a href="/courses/add" class="btn">Add New Course</a>
+    <% if(courses.length> 0) {%>
+      <% courses.forEach(course=> { %>
+        <div class="card">
+          <h2>
+            <%= course.name %>
+          </h2>
+          <p><strong>Duration:</strong>
+            <%= course.duration %> hours
+          </p>
+          <p><strong>Total Students:</strong>
+            <%= course.students.length %>
+          </p>
+          <h3>Students</h3>
+          <% if (course.students.length> 0) { %>
+            <ul class="list">
+              <% course.students.forEach(student=> { %>
+                <li class="list__item">
+                  <strong>
+                    <%= student.name %>
+                  </strong> - Age: <%= student.age %>, Grade: <%= student.averageGrade %>
+                </li>
+                <% }) %>
+            </ul>
+            <% } else { %>
+              <p>No students enrolled in this course.</p>
+              <% } %>
+
+                <h3>Seminars</h3>
+                <% if (course.seminars && course.seminars.length> 0) { %>
+                  <ul class="list">
+                    <% course.seminars.forEach((seminar, id)=> { %>
+                      <li class="list__item">
+                        <strong>Topic:</strong>
+                        <%= seminar.topic %>,
+                          <strong>Duration:</strong>
+                          <%= seminar.duration %> hours,
+                            <strong>Responsible Student:</strong>
+                            <%= seminar.student.name %>
+                              <a class="btn-delete" href="/courses/delete/seminar/<%= course.id %>&<%= id %>">Delete</a>
+                      </li>
+                      <% }) %>
+                  </ul>
+                  <% } else { %>
+                    <p>No seminars added for this course.</p>
+                    <% } %>
+
+                      <div class="actions">
+                        <a href="/courses/add/seminar/<%= course._id %>">Add Seminar</a>
+                        <a href="/courses/add/<%=course.id %>">Edit</a>
+                        <a class="btn-delete" href="/courses/delete/<%= course.id %>">Delete</a>
+                      </div>
+        </div>
+        <% }) %>
+          <% } else { %>
+            <h2>All courses have been completed. Add new course.</h2>
+            <% } %>
+  </div>
+</body>
+
+</html>

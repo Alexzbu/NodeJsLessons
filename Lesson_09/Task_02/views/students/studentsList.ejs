@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Students</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="body">
+  <header>
+    <%- include('../sections/header.ejs')%>
+      <h1>Students</h1>
+  </header>
+  <div class="container">
+    <a href="/students/add" class="btn">Add New Student</a>
+    <% if(students.length> 0) {%>
+      <% students.forEach(student=> { %>
+        <div class="card">
+          <h2>
+            <%= student.name %>
+          </h2>
+          <p><strong>Age:</strong>
+            <%= student.age %>
+          </p>
+          <p><strong>Average grade:</strong>
+            <%= student.averageGrade %>
+          </p>
+          <div class="actions">
+            <a href="/students/add/<%= student.id %>">Edit</a>
+            <a href="/students/delete/<%= student.id %>" class="btn-delete">Delete</a>
+          </div>
+        </div>
+        <% }) %>
+          <% } else { %>
+            <h2>All students have graduated. Add new student</h2>
+            <% } %>
+  </div>
+</body>
+
+</html>

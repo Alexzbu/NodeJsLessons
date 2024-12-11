@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%= student?.id ? 'Update student' : 'Add new student' %>
+  </title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body class="body">
+  <header>
+    <%- include('../sections/header.ejs')%>
+      <h1>
+        <%= student?.id ? 'Update student' : 'Add new student' %>
+      </h1>
+  </header>
+  <div class="container">
+    <form action="/students/add" method="POST">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="<%= student?.name %>">
+        <div>
+          <% if (errors && errors.name) { %>
+            <ul class="error-messages">
+              <% errors.name.forEach(msg=> { %>
+                <li>
+                  <%= msg %>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="duration">Age:</label>
+        <input type="number" name="age" value="<%= student?.age %>">
+        <div>
+          <% if (errors && errors.age) { %>
+            <ul class="error-messages">
+              <% errors.age.forEach(msg=> { %>
+                <li>
+                  <%= msg %>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="duration">Average grade:</label>
+        <input type="number" name="averageGrade" value="<%= student?.averageGrade %>">
+        <div>
+          <% if (errors && errors.averageGrade) { %>
+            <ul class="error-messages">
+              <% errors.averageGrade.forEach(msg=> { %>
+                <li>
+                  <%= msg %>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </div>
+      </div>
+      <% if (courses.length> 0) { %>
+        <div class="form-group">
+          <label for="courseId">Which course would you like to take:</label>
+          <select name="courseId">
+            <% courses.forEach(course=> { %>
+              <option <%=student?.courseId===course.id ? 'selected' : '' %> value="<%= course.id %>">
+                  <%= course.name %>
+              </option>
+              <% }) %>
+          </select>
+        </div>
+        <% } %>
+          <button type="submit">
+            <%= student?.id ? 'Update student' : 'Add student' %>
+          </button>
+    </form>
+
+  </div>
+</body>
+
+</html>
