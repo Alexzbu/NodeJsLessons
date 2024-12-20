@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Форма</title>
+   <!-- Підключення CSS для стилів -->
+   <link rel="stylesheet" href="../style/main.css" />
+   <!-- Підключення необхідних скриптів -->
+   <script src="../scripts/RequestManager.js"></script>
+   <script>
+      RequestManager.protectRoute()
+   </script>
+   <script src="../scripts/settings.js"></script>
+   <script src="../scripts/HeaderManager.js"></script>
+   <script src="../scripts/ProductsApiManager.js"></script>
+   <script src="../scripts/FormManager.js"></script>
+</head>
+
+<body>
+
+   <h1 id="title">Додати товар</h1>
+
+   <div id="form-container"></div>
+
+   <div id="messages"></div>
+
+   <div id="errors"></div>
+
+   <script>
+      // Використання класу HeaderManager для створення заголовка з меню
+      document.addEventListener("DOMContentLoaded", async () => {
+         new HeaderManager("products/addForm.html", menuItems)
+
+         let product = {}
+         const urlParams = new URLSearchParams(window.location.search)
+         const id = urlParams.get('id') || ''
+
+         if (id) {
+            product = await ProductsApiManager.getProductById(id)
+            document.getElementById('title').innerText = 'Оновити товар'
+         }
+
+         const submitCallback = async (data) => {
+            await ProductsApiManager.addProduct(data, id)
+         }
+
+         const addForm = new FormManager(
+            [
+               { label: "Назва", type: "text", name: "title" },
+               { label: "Ціна", type: "number", name: "price" },
+               { label: "Опис", type: "text", name: "description" },
+               { label: "Фото", type: "file", name: "image" },
+            ],
+            submitCallback,
+            product || {}
+         )
+         addForm.render("form-container")
+      })
+   </script>
+</body>
+
+</html>
