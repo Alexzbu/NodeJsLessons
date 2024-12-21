@@ -69,7 +69,7 @@
           // Обробка зображень продуктів
           const productsList = data.products.map((prod) => ({
             ...prod,
-            image: 'data:image;base64,' + prod.image,
+            image: prod.image,
           }))
 
           if (productsList) {
