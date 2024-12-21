@@ -1,4 +1,3 @@
-import User from '../models/user/User.mjs'
 import UsersDBService from '../models/user/UsersDBService.mjs'
 import { prepareToken } from '../../../utils/jwtHelpers.mjs'
 
@@ -7,10 +6,10 @@ class AuthController {
   static async login(req, res) {
 
     if (!req.body.username) {
-      return res.status(401).json({ error: 'Email is required' })
+      return res.status(401).json([{ message: 'Email is required' }])
     }
     if (!req.body.password) {
-      return res.status(401).json({ error: 'Password is required' })
+      return res.status(401).json([{ message: 'Password is required' }])
     }
 
     try {
@@ -19,11 +18,11 @@ class AuthController {
       })
 
       if (!user) {
-        return res.status(401).json({ error: 'User not found' })
+        return res.status(401).json([{ message: 'Incorrect username or password.' }])
       }
 
-      if (!user.validPassword(req.body.password)) {
-        return res.status(401).json({ error: 'Login error' })
+      if (!await user.validPassword(req.body.password)) {
+        return res.status(401).json([{ message: 'Incorrect username or password.' }])
       }
       const token = prepareToken(
         {

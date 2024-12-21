@@ -58,6 +58,7 @@
         try {
           // Виконуємо запит на авторизацію через LoginApiManager
           const response = await LoginApiManager.login(formData, (data) => {
+
             // Зберігаємо токен у localStorage
             localStorage.setItem('jwt_token', data.token)
           })

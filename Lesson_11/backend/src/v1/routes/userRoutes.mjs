@@ -9,11 +9,9 @@ const router = express.Router()
 
 router.get('/', UserController.usersList)
 
-router.get('/:id', UserController.getUserById)
-
 router.post('/add/:id?',
   // UploadManager.single('userImg'),
-  // checkSchema(UserValidator.userSchema),
+  checkSchema(UserValidator.userSchema),
   // UserValidator.checkFile,
   UserController.createUser
 )

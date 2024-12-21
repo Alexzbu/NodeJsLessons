@@ -63,8 +63,7 @@ class RequestManager {
         }
         window.location.href = redirectRoute
       } else {
-        const result = await response.json()
-        this.showErrors(result.errors)
+        this.showErrors(resData)
       }
     } catch (error) {
       console.error('Error:', error)

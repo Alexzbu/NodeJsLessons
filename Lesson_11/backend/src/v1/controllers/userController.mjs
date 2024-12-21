@@ -1,5 +1,4 @@
 import UsersDBService from '../models/user/UsersDBService.mjs'
-import TypesDBService from '../models/type/TypesDBService.mjs'
 import { validationResult } from 'express-validator'
 
 class UserController {
@@ -20,97 +19,19 @@ class UserController {
     }
   }
 
-  static async getUserById(req, res) {
-    try {
-      const id = req.params.id
-
-      const user = await UsersDBService.getById(id)
-      res.status(200).json(
-        user.username
-      )
-    } catch (err) {
-      res.status(500).json({ error: err.message })
-    }
-  }
-
-  static async registerForm(req, res) {
-    try {
-      const id = req.params.id
-      let user = null
-      if (id) {
-        user = await UsersDBService.getById(id)
-      }
-      const types = await TypesDBService.getList()
-
-      res.status(200).json({
-        errors: [],
-        data: user,
-        user: req.user,
-      })
-    } catch (err) {
-      res.status(500).json({ error: err.message })
-    }
-  }
-
-  static async registerUser(req, res) {
-    const errors = validationResult(req)
-    const data = req.body
-    const types = await TypesDBService.getList()
-
-    if (!errors.isEmpty()) {
-      if (req.params.id) data.id = req.params.id
-      return res.status(400).json({
-        errors: errors.array(),
-        data,
-        types,
-        user: req.user,
-      })
-    }
-
-    try {
-      const dataObj = req.body
-      if (req.file) dataObj.img = req.file.filename
-
-      if (req.params.id) {
-        await UsersDBService.update(req.params.id, dataObj)
-      } else {
-        await UsersDBService.create(dataObj)
-      }
-
-      res.status(200).json({ message: 'User registered successfully' })
-    } catch (err) {
-      res.status(500).json({
-        errors: [{ msg: err.message }],
-        data,
-        types,
-        user: req.user,
-      })
-    }
-  }
-
   static async createUser(req, res) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      const user = req.body
-      const errorMessages = {}
+      const errorMessages = []
       errors.array().forEach(error => {
-        if (!errorMessages[error.path]) {
-          errorMessages[error.path] = []
-        }
-        errorMessages[error.path].push(error.msg)
+        errorMessages.push({ message: error.msg })
       })
-      return res.status(400).json({
-        user,
-        errors: errorMessages,
-      })
+      return res.status(400).json(errorMessages)
     }
 
     try {
       const userData = req.body
-      console.log(req.params.id)
-      console.log(userData.username)
       if (req.params.id) {
-        // await UsersDBService.update(req.params.id, userData)
         await UsersDBService.update(req.params.id, userData)
       } else {
         await UsersDBService.create(userData)
