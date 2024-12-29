@@ -1,15 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MainPage from './components/MainPage';
+import React from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import Navbar from './components/NavBar'
+import AppRoutes from './router/Routes'
 
 const App = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-      </Routes>
+      <Navbar />
+      <AppRoutes />
     </Router>
-  );
-};
+  )
+}
 
-export default App;
+export default App
