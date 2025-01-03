@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/NodeJsLessons/Lesson_12/static/css/main.0e39f7d2.css",
-    "main.js": "/NodeJsLessons/Lesson_12/static/js/main.de84e073.js",
-    "index.html": "/NodeJsLessons/Lesson_12/index.html",
-    "main.0e39f7d2.css.map": "/NodeJsLessons/Lesson_12/static/css/main.0e39f7d2.css.map",
-    "main.de84e073.js.map": "/NodeJsLessons/Lesson_12/static/js/main.de84e073.js.map"
+    "main.css": "/NodeJsLessons/Lesson_12/frontend/static/css/main.0e39f7d2.css",
+    "main.js": "/NodeJsLessons/Lesson_12/frontend/static/js/main.de84e073.js",
+    "index.html": "/NodeJsLessons/Lesson_12/frontend/index.html",
+    "main.0e39f7d2.css.map": "/NodeJsLessons/Lesson_12/frontend/static/css/main.0e39f7d2.css.map",
+    "main.de84e073.js.map": "/NodeJsLessons/Lesson_12/frontend/static/js/main.de84e073.js.map"
   },
   "entrypoints": [
     "static/css/main.0e39f7d2.css",
