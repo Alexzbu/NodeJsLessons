@@ -7,7 +7,7 @@ const carSchema = new Schema({
     type: String,
     required: [true, 'Brand is required'],
     minlength: [2, 'Brand must be at least 2 characters long'],
-    maxlength: [20, 'Brand must be at most 20 characters long'],
+    maxlength: [30, 'Brand must be at most 30 characters long'],
     trim: true,
   },
   year: {
@@ -27,7 +27,6 @@ const carSchema = new Schema({
   },
   image: {
     type: String,
-    required: [true, 'Image is required'],
 
   },
   location: {

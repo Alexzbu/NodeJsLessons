@@ -12,73 +12,41 @@ class LocationController {
 		}
 	}
 
-	static createLocation(req, res) {
+	static async getLocationById(req, res) {
+		try {
+			const location = await LocationService.getLocationById(req.params.id)
+
+			res.status(200).json({ location })
+		} catch (err) {
+			res.status(500).json({ error: err.message })
+		}
+	}
+
+	static async createLocation(req, res) {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
-			const location = req.body
 			const errorMessages = {}
 			errors.array().forEach(error => {
-				if (!errorMessages[error.path]) {
-					errorMessages[error.path] = []
-				}
-				errorMessages[error.path].push(error.msg)
+				errorMessages[error.path] = error.msg
 			})
-			return res.status(400).render('locations/locationForm', {
-				location,
-				user: req.user,
-				errors: errorMessages,
-			})
+			return res.status(400).json(errorMessages)
 		}
 
 		const locationData = req.body
-		console.log(locationData)
-		LocationService.addNewLocation(locationData)
+		if (req.params.id) {
+			await LocationService.updateLocation(req.params.id, locationData)
+		} else {
+			await LocationService.addNewLocation(locationData)
+		}
 		res.status(200).json({ message: 'successful' })
 	}
 
-	static async locationForm(req, res) {
-		try {
-			const location = req.params.id ? await LocationService.getLocationById(req.params.id) : null
-			res.render('locations/locationForm', {
-				location,
-				user: req.user,
-				errors: []
-			})
-		} catch (err) {
-			res.status(500).json({ error: err.message })
-		}
-	}
 
-	static async updateLocation(req, res) {
-		const errors = validationResult(req)
-		if (!errors.isEmpty()) {
-			const location = req.body
-			const errorMessages = {}
-			errors.array().forEach(error => {
-				if (!errorMessages[error.path]) {
-					errorMessages[error.path] = []
-				}
-				errorMessages[error.path].push(error.msg)
-			})
-			return res.status(400).render('locations/locationForm', {
-				location,
-				user: req.user,
-				errors: errorMessages,
-			})
-		}
-		try {
-			const locationNewData = req.body
-			await LocationService.updateLocation(req.params.id, locationNewData)
-			res.redirect('/locations')
-		} catch (err) {
-			res.status(500).json({ error: err.message })
-		}
-	}
 
 	static async deleteLocation(req, res) {
 		try {
 			await LocationService.deleteLocation(req.params.id)
-			res.redirect('/locations')
+			res.status(200).json({ message: 'successful' })
 		} catch (err) {
 			res.status(500).json({ error: err.message })
 		}

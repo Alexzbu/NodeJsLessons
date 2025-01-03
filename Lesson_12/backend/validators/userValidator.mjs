@@ -10,7 +10,7 @@ class UserValidator {
       password: {
          matches: {
             options: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            errorMessage: 'The password must contain at least one letter, one number, one special and at least 8 characters.'
+            errorMessage: 'Password must contain at least one letter, one number, one special and at least 8 characters.'
          },
       }
    }

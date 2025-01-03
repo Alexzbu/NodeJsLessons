@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import apiServer from '../../api/indexApi'
 import Loading from '../../components/Loading'
 
-const Cars = ({ isAuthenticated }) => {
+const CarsScroll = ({ isAuthenticated }) => {
    const [data, setData] = useState([])
    const [page, setPage] = useState(0)
    const [filter, setFilter] = useState('')
@@ -12,26 +12,45 @@ const Cars = ({ isAuthenticated }) => {
    const [loading, setLoading] = useState(false)
    const [del, setDel] = useState(false)
    const navigate = useNavigate()
-   const limit = 6
+   const limit = 9
 
-   useEffect(() => {
-      const fetchData = async () => {
-         try {
-            setLoading(true)
-            setDel(false)
-            const response = await apiServer.get('/cars', {
-               params: { page, limit, sort, filter },
-            });
-            setData(response.data.carList)
-            setTotalPages(Math.ceil(response.data.count / limit) > 1 ? Math.ceil(response.data.count / limit) : 0)
-            setLoading(false)
-         } catch (error) {
-            console.error('Error fetching data:', error)
-         }
+   const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+         setPage(prevPage => {
+            if (prevPage <= totalPages) {
+               return prevPage + 1
+            } else {
+               window.removeEventListener('scroll', handleScroll)
+            }
+            return prevPage
+         })
       }
 
-      fetchData();
+   }
+
+   const fetchData = async () => {
+      try {
+         if (loading) return
+         setLoading(true)
+         const response = await apiServer.get('/cars', {
+            params: { page, limit, sort, filter },
+         })
+         setData(prevData => [...prevData, ...response.data.carList])
+         setTotalPages(Math.ceil(response.data.count / limit))
+         setLoading(false)
+      } catch (error) {
+         console.error('Error fetching data:', error);
+      }
+   }
+
+   useEffect(() => {
+      fetchData()
    }, [page, sort, filter, del])
+
+   useEffect(() => {
+      window.addEventListener('scroll', handleScroll)
+   }, [sort, filter, del])
+
 
    const deleteItem = async (id) => {
       try {
@@ -54,10 +73,10 @@ const Cars = ({ isAuthenticated }) => {
                   type="text"
                   placeholder="Filter by brand"
                   value={filter}
-                  onChange={(e) => { setFilter(e.target.value); setPage(0) }}
+                  onChange={(e) => { setFilter(e.target.value); setPage(0); setData([]) }}
                />
                <div className="form__select-wrapper">
-                  <select className="form__select" onChange={(e) => { setSort(e.target.value); setPage(0) }}>
+                  <select className="form__select" onChange={(e) => { setSort(e.target.value); setPage(0); setData([]) }}>
                      <option value="">Sort by price:</option>
                      <option value="price:asc">Price: Low to high</option>
                      <option value="price:desc">Price: High to low</option>
@@ -66,12 +85,9 @@ const Cars = ({ isAuthenticated }) => {
             </div>
          </div>
          <div className="car-list">
-            {loading &&
-               <Loading />
-            }
-            {data.map((item) => (
+            {data.map((item, index) => (
 
-               <div className="car-card" key={item._id}>
+               <div className="car-card" key={index}>
                   <Link to={`/carDetail/${item._id}`}>
                      <img className="car-card__image" src={item.image} alt={item.brand} />
                   </Link>
@@ -87,19 +103,11 @@ const Cars = ({ isAuthenticated }) => {
                </div>
             ))}
          </div>
-         <div className='pagination-block'>
-            {Array.from({ length: totalPages }, (_, index) => (
-               <button className={page === index ? 'car-card__link active-button' : 'car-card__link'}
-                  key={index}
-                  onClick={() => setPage(index)}
-                  disabled={page === index}
-               >
-                  {index + 1}
-               </button>
-            ))}
-         </div>
+         {loading &&
+            <Loading />
+         }
       </div>
    )
 }
 
-export default Cars
+export default CarsScroll

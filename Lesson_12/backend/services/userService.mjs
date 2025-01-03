@@ -24,11 +24,8 @@ class UserService {
 		return await User.findOne(username)
 	}
 
-	static async updateUser(id, data) {
-		return await User.findByIdAndUpdate(id, data, {
-			new: true,
-			runValidators: true,
-		})
+	async update(id, data) {
+		return await User.findOneAndUpdate({ _id: id }, data)
 	}
 
 	static async deleteUser(id) {

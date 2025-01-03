@@ -1,30 +1,30 @@
 class LocationValidator {
 
-    static locationSchema = {
-     title: {
-        notEmpty: {
-          errorMessage: 'Назва локації обов’язкова',
-        },
-        isLength: {
-          options: { min: 2, max: 20 },
-          errorMessage: 'Назва локації має бути від 2 до 20 символів',
-        },
-        trim: true,
-        escape: true,
+  static locationSchema = {
+    title: {
+      trim: true,
+      escape: true,
+      notEmpty: {
+        errorMessage: 'Name is required.'
       },
-      address: {
-        notEmpty: {
-          errorMessage: 'Адреса обов’язкова',
-        },
-        isLength: {
-          options: { min: 2, max: 20 },
-          errorMessage: 'Адреса має бути від 2 до 20 символів',
-        },
-        trim: true,
-        escape: true,
+      isLength: {
+        options: { min: 2, max: 20 },
+        errorMessage: 'Name of the location should be from 2 to 20 characters',
       },
-    }
+    },
+    address: {
+      trim: true,
+      escape: true,
+      notEmpty: {
+        errorMessage: 'Address is required.'
+      },
+      isLength: {
+        options: { min: 3, max: 50 },
+        errorMessage: 'Address must be from 3 to 50 characters',
+      },
+
+    },
   }
-  
-  export default LocationValidator
-  
+}
+
+export default LocationValidator

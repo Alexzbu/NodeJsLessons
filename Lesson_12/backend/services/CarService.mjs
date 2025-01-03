@@ -3,7 +3,7 @@ import Car from '../models/Car.mjs'
 class CarService {
   static async getCarsList(reqQuery) {
 
-    const { sort, filter, page = 1, limit = 1 } = reqQuery
+    const { sort, filter, page = 0, limit = 1 } = reqQuery
     const skipNum = page * limit
     let sortOptions = {}
     if (sort) {

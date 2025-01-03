@@ -2,32 +2,37 @@ class CarValidator {
 
   static carSchema = {
     brand: {
-      notEmpty: {
-        errorMessage: 'Марка автомобіля обов’язкова',
-      },
-      isLength: {
-        options: { min: 2, max: 20 },
-        errorMessage: 'Марка автомобіля має бути від 2 до 20 символів',
-      },
       trim: true,
       escape: true,
+      notEmpty: {
+        errorMessage: 'Brand is required.'
+      },
+      isLength: {
+        options: { min: 2, max: 30 },
+        errorMessage: 'Brand must be at most 30 characters long.',
+      },
     },
     year: {
       isInt: {
-        options: { min: 1900, max: new Date().getFullYear() },
-        errorMessage: 'Рік випуску має бути числом від 1900 до поточного року',
+        options: { min: 1886, max: new Date().getFullYear() },
+        errorMessage: 'Please enter a valid year',
       }
     },
-    number: {
-      matches: {
-        options: /^[А-ЯІЇЄA-Z]{2}\d{4}\d?[А-ЯІЇЄA-Z]{2}$/,
-        errorMessage: 'Номер має бути у форматі АА0000АА'
+    price: {
+      isInt: {
+        options: { min: 0 },
+        errorMessage: 'Please enter a valid year',
       }
     },
-    carImage: {
+    image: {
       custom: {
-        options: (value, { req }) => req.file || req.body.existingImagePath ? true : false,
-        errorMessage: 'Зображення є обов’язковим'
+        options: (value, { req }) => {
+          if (!req.params.id && !req.file) {
+            return false;
+          }
+          return true;
+        },
+        errorMessage: 'Image is required'
       }
     }
   }
