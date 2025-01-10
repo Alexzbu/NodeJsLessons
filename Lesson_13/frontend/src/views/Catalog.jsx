@@ -180,6 +180,7 @@ const Catalog = () => {
                      </form>
                   </aside>
                   <div className="catalog__body">
+                     <Link to="/addProduct" className="catalog__add-button button">Add procuct</Link>
                      <div className="catalog__header">
                         <h1 className="catalog__title">Women’s Clothing</h1>
                         <ul className="catalog__type type-catalog">
@@ -192,17 +193,16 @@ const Catalog = () => {
                         </ul>
                      </div>
                      <div className="catalog__items">
-                        <article class="item-product">
-                           <a href="#" class="item-product__favorite _icon-favorite"></a>
-                           <a href="#" class="item-product__picture-link">
-                              <img src="image/modules/for-men/01.jpg" class="item-product__image" alt="" />
+                        <article className="item-product">
+                           <a href="#" className="item-product__picture-link">
+                              <img src="image/modules/for-men/01.jpg" className="item-product__image" alt="" />
                            </a>
-                           <div class="item-product__body">
-                              <h4 class="item-product__title">
-                                 <a href="#" class="item-product__link-title">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo, molestias!</a>
+                           <div className="item-product__body">
+                              <h4 className="item-product__title">
+                                 <a href="#" className="item-product__link-title">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo, molestias!</a>
                               </h4>
-                              <div class="item-product__label">Explore Now!</div>
-                              <div class="item-product__price">$38.00</div>
+                              <div className="item-product__label">Explore Now!</div>
+                              <div className="item-product__price">$38.00</div>
                            </div>
                         </article>
                      </div>

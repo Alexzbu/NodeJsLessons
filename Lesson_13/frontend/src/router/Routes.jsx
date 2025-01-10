@@ -2,11 +2,9 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import MainPage from '../views/MainPage'
 import Catalog from '../views/Catalog';
-import CarsScroll from '../views/cars/CarsScroll'
-import AddCarForm from '../views/cars/AddCarForm'
-import CarDetail from '../views/cars/CarDetails'
-import Locations from '../views/locations/Locations'
-import AddLocationForm from '../views/locations/AddLocationForm'
+import AddProductForm from '../views/products/AddProductForm';
+import Props from '../views/props/Props';
+import AddPropsForm from '../views/props/AddPropsForm';
 import Login from '../views/auth/Login'
 import Register from '../views/auth/Register'
 
@@ -20,20 +18,20 @@ const AppRoutes = ({ isAuthenticated, setIsAuthenticated }) => {
       <Routes>
          <Route path="/" element={<MainPage />} />
          <Route path="/catalog" element={<Catalog isAuthenticated={isAuthenticated} />} />
-         <Route path="/carsScroll" element={<CarsScroll isAuthenticated={isAuthenticated} />} />
-         <Route path="/carDetail/:id" element={<CarDetail />} />
-         <Route path="/addCar/:id?"
+         {/* <Route path="/carsScroll" element={<CarsScroll isAuthenticated={isAuthenticated} />} />
+         <Route path="/carDetail/:id" element={<CarDetail />} /> */}
+         <Route path="/addProduct/:id?"
             element={
-               <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <AddCarForm />
-               </ProtectedRoute>
+               // <ProtectedRoute isAuthenticated={isAuthenticated}>
+               <AddProductForm />
+               // </ProtectedRoute>
             } />
-         <Route path="/locations" element={<Locations isAuthenticated={isAuthenticated} />} />
-         <Route path="/addLocation/:id?"
+         <Route path="/props" element={<Props isAuthenticated={isAuthenticated} />} />
+         <Route path="/addProps/:id?/:title"
             element={
-               <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <AddLocationForm />
-               </ProtectedRoute>
+               // <ProtectedRoute isAuthenticated={isAuthenticated}>
+               <AddPropsForm />
+               // </ProtectedRoute>
             } />
          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
          <Route path="/register" element={<Register />} />
