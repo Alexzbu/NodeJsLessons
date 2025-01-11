@@ -64,7 +64,6 @@ function starRatingSet(rating, value) {
 
 // Spollers
 const spollers = document.querySelectorAll('[data-spoller]')
-console.log(spollers.length)
 if (spollers.length) {
 	spollers.forEach(spoller => {
 		spoller.dataset.spoller !== 'open' ? spoller.nextElementSibling.hidden = true : spoller.classList.add('active')

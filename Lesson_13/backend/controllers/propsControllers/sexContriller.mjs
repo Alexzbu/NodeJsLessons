@@ -1,12 +1,12 @@
-import LocationService from '../services/LocationService.mjs'
+import SexService from '../../services/propsServise/SexService.mjs'
 import { validationResult } from 'express-validator'
 
-class LocationController {
-	static async getLocations(req, res) {
+class SexController {
+	static async getSexes(req, res) {
 		try {
-			const locationsList = await LocationService.getLocationsList()
+			const sexesList = await SexService.getSexesList()
 
-			res.status(200).json(locationsList)
+			res.status(200).json(sexesList)
 		} catch (err) {
 			res.status(500).json({ error: err.message })
 		}
@@ -22,7 +22,7 @@ class LocationController {
 		}
 	}
 
-	static async createLocation(req, res) {
+	static async createSex(req, res) {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
 			const errorMessages = {}
@@ -32,11 +32,11 @@ class LocationController {
 			return res.status(400).json(errorMessages)
 		}
 
-		const locationData = req.body
+		const sex = req.body
 		if (req.params.id) {
 			await LocationService.updateLocation(req.params.id, locationData)
 		} else {
-			await LocationService.addNewLocation(locationData)
+			await SexService.addNewSex(sex)
 		}
 		res.status(200).json({ message: 'successful' })
 	}
@@ -53,4 +53,4 @@ class LocationController {
 	}
 }
 
-export default LocationController
+export default SexController

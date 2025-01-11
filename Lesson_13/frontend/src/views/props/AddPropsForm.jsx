@@ -32,15 +32,15 @@ const AddPropsForm = () => {
 
       try {
          console.log(title)
-         // const response = await apiServer.post(`/props/add/${id}`, {
-         //    title,
-         // });
+         const response = await apiServer.post(`/props/${title}/add/${id}`, {
+            name
+         });
 
-         // if (response.status === 200) {
-         //    navigate()
-         // }
+         if (response.status === 200) {
+            navigate('/addProduct')
+         }
       } catch (error) {
-         setErrors(error.response.data)
+         // setErrors(error.response.data)
          console.error('Error adding car:', error)
       }
    };
@@ -52,7 +52,14 @@ const AddPropsForm = () => {
             <div class="form">
 
                <label class="form__label">Name:</label>
-               <input class="form__input" type="text" id="name" name="name" />
+               <input
+                  class="form__input"
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+               />
 
                <button class="form__button button" onClick={sendForm}>
                   Add

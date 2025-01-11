@@ -13,15 +13,14 @@ const Props = ({ isAuthenticated }) => {
    useEffect(() => {
       const fetchData = async () => {
          try {
-            // setLoading(true)
-            // const response = await apiServer.get('/locations')
-            // setData(response.data)
-            // setLoading(false)
+            setLoading(true)
+            const response = await apiServer.get(`/props/${title}`)
+            setData(response.data)
+            setLoading(false)
          } catch (error) {
             console.error('Error fetching data:', error)
          }
       }
-      console.log(title)
       fetchData();
    }, [])
 
@@ -41,18 +40,14 @@ const Props = ({ isAuthenticated }) => {
          <div className="props-list__container">
             <h1 className="props-list__title title">Props list</h1>
             <ul className="props-list__items">
-               <li className="props-list__item item">Men
-                  <div className="item__action">
-                     <a className="item__link menu__link" href="#">Edit</a>
-                     <a className="item__link menu__link" href="#">Delete</a>
-                  </div>
-               </li>
-               <li className="props-list__item item">Women
-                  <div className="item__action">
-                     <a className="item__link menu__link" href="#">Edit</a>
-                     <a className="item__link menu__link" href="#">Delete</a>
-                  </div>
-               </li>
+               {data.map((item) => (
+                  <li className="props-list__item item" key={item._id}>{item.name}
+                     <div className="item__action">
+                        <a className="item__link menu__link" href="#">Edit</a>
+                        <a className="item__link menu__link" href="#">Delete</a>
+                     </div>
+                  </li>
+               ))}
             </ul>
             <button className=" button" onClick={() => navigate(`/addProps/${title}`)}>Add new</button>
          </div>

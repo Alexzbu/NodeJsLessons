@@ -7,6 +7,7 @@ const router = Router()
 
 router.get('/', CarsController.getCars)
 
+
 router.post('/add/:id?',
     upload.single('carImage'),
     checkSchema(CarValidator.carSchema),

@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename)
 const middleware = (app) => {
 
   app.use(cors())
-  auth(app)
+  // auth(app)
   app.set('views', path.join(__dirname, '../views'))
   app.set('view engine', 'ejs')
 

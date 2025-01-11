@@ -4,45 +4,66 @@ import apiServer from '../../api/indexApi'
 
 const AddProductForm = () => {
    const { id = '' } = useParams()
-   const [brand, setBrand] = useState('')
    const [name, setName] = useState('')
    const [price, setPrice] = useState('')
    const [description, setDescription] = useState('')
-   const [sex, setSex] = useState([])
-   const [sexUP, setSexUP] = useState('')
+   const [brands, setBrands] = useState([])
+   const [brand, setBrand] = useState('')
+   const [sexs, setSexs] = useState([])
+   const [sex, setSex] = useState('')
+   const [colors, setColors] = useState([])
+   const [color, setColor] = useState('')
+   const [sizes, setSizes] = useState([])
+   const [size, setSize] = useState('')
    const [categorys, setCategorys] = useState([])
    const [category, setCategory] = useState('')
    const [image, setImage] = useState(null)
    const [errors, setErrors] = useState({})
    const navigate = useNavigate()
 
-   // useEffect(() => {
-   //    const fetchCar = async () => {
-   //       if (id) {
-   //          try {
-   //             const response = await apiServer.get(`/cars/details/${id}`)
-   //             setBrand(response.data.car.brand)
-   //             setYear(response.data.car.year)
-   //             setPrice(response.data.car.price)
-   //             setDescription(response.data.car.description)
-   //             setLocation(response.data.car.location?._id)
-   //          } catch (error) {
-   //             console.error('Error fetching car data:', error)
-   //          }
-   //       }
-   //    }
-   //    const fetchLocations = async () => {
-   //       try {
-   //          const response = await apiServer.get('/locations')
-   //          setLocations(response.data)
-   //          setLocation(response.data[0]._id)
-   //       } catch (error) {
-   //          console.error('Error fetching locations:', error)
-   //       }
-   //    }
-   //    fetchCar()
-   //    fetchLocations()
-   // }, [])
+   useEffect(() => {
+      const fetchProduct = async () => {
+         // if (id) {
+         //    try {
+         //       const response = await apiServer.get(`/cars/details/${id}`)
+         //       setBrand(response.data.car.brand)
+         //       setYear(response.data.car.year)
+         //       setPrice(response.data.car.price)
+         //       setDescription(response.data.car.description)
+         //       setLocation(response.data.car.location?._id)
+         //    } catch (error) {
+         //       console.error('Error fetching car data:', error)
+         //    }
+         // }
+      }
+      const fetchProps = async () => {
+         try {
+            const brandResponse = await apiServer.get('/props/brand')
+            setBrands(brandResponse.data)
+            setBrand(brandResponse.data[0]._id)
+
+            const sexResponse = await apiServer.get('/props/sex')
+            setSexs(sexResponse.data)
+            setSex(sexResponse.data[0]._id)
+
+            const colorResponse = await apiServer.get('/props/color')
+            setColors(colorResponse.data)
+            setColor(colorResponse.data[0]._id)
+
+            const sizeResponse = await apiServer.get('/props/size')
+            setSizes(sizeResponse.data)
+            setSize(sizeResponse.data[0]._id)
+
+            const categoryResponse = await apiServer.get('/props/category')
+            setCategorys(categoryResponse.data)
+            setCategory(categoryResponse.data[0]._id)
+         } catch (error) {
+            console.error('Error fetching props:', error)
+         }
+      }
+      fetchProduct()
+      fetchProps()
+   }, [])
 
    // const validateForm = () => {
    //    const newErrors = {}
@@ -128,8 +149,10 @@ const AddProductForm = () => {
                <label className="form__label">Brand:</label>
                <div className="form__select-wrapper">
                   <div className="form__select-item">
-                     <select name="brand" id="brand" className="form__select">
-                        <option></option>
+                     <select value={brand} name="brand" id="brand" className="form__select" onChange={(e) => setBrand(e.target.value)}>
+                        {brands.map((item) => (
+                           < option value={item._id} key={item._id}>{item.name}</option>
+                        ))}
                      </select>
                   </div>
                   <Link className="form__link menu__link" to="/props/?title=brand">Edit</Link>
@@ -139,7 +162,9 @@ const AddProductForm = () => {
                <div className="form__select-wrapper">
                   <div className="form__select-item">
                      <select name="sex" id="sex" className="form__select">
-                        <option></option>
+                        {sexs.map((item) => (
+                           < option value={item._id} key={item._id}>{item.name}</option>
+                        ))}
                      </select>
                   </div>
                   <Link className="form__link menu__link" to="/props/?title=sex">Edit</Link>
@@ -149,7 +174,9 @@ const AddProductForm = () => {
                <div className="form__select-wrapper">
                   <div className="form__select-item">
                      <select name="color" id="color" className="form__select">
-                        <option></option>
+                        {colors.map((item) => (
+                           < option value={item._id} key={item._id}>{item.name}</option>
+                        ))}
                      </select>
                   </div>
                   <Link className="form__link menu__link" to="/props/?title=color">Edit</Link>
@@ -159,7 +186,9 @@ const AddProductForm = () => {
                <div className="form__select-wrapper">
                   <div className="form__select-item">
                      <select name="size" id="size" className="form__select">
-                        <option></option>
+                        {sizes.map((item) => (
+                           < option value={item._id} key={item._id}>{item.name}</option>
+                        ))}
                      </select>
                   </div>
                   <Link className="form__link menu__link" to="/props/?title=size">Edit</Link>
@@ -169,7 +198,9 @@ const AddProductForm = () => {
                <div className="form__select-wrapper">
                   <div className="form__select-item">
                      <select name="category" id="category" className="form__select">
-                        <option></option>
+                        {categorys.map((item) => (
+                           < option value={item._id} key={item._id}>{item.name}</option>
+                        ))}
                      </select>
                   </div>
                   <Link className="form__link menu__link" to="/props/?title=category">Edit</Link>
@@ -183,7 +214,7 @@ const AddProductForm = () => {
                </button>
             </div>
          </div>
-      </main>
+      </main >
    );
 };
 
