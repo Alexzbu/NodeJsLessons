@@ -5413,13 +5413,13 @@ body.menu-open {
 .thumb-slider__slider {
   height: 16.5625rem;
 }
-.thumb-slider__slide.swiper-slide {
+.thumb-slider__slide {
   border-radius: 0.625rem;
   padding: 0.3125rem;
   cursor: pointer;
   border: 0.0625rem solid transparent;
 }
-.thumb-slider__slide.swiper-slide.swiper-slide-thumb-active {
+.thumb-slider__slide.swiper-slide-thumb-active {
   border: 0.0625rem solid #000;
 }
 .thumb-slider__image {
@@ -5462,6 +5462,11 @@ body.menu-open {
     color: #fff;
   }
 }
+.swiper-slide-thumb-active {
+  border: 0.0625rem solid #000;
+  border-radius: 0.625rem;
+}
+
 .sizes-product__header {
   display: -webkit-box;
   display: -ms-flexbox;

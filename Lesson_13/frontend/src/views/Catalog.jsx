@@ -1,43 +1,82 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import noUiSlider from 'nouislider';
-import wNumb from 'wnumb';
+// import noUiSlider from 'nouislider';
+// import wNumb from 'wnumb';
+import apiServer from '../api/indexApi';
 
 const Catalog = () => {
+   const [products, setProducts] = useState([])
+   const [categorys, setCategorys] = useState([])
+   const [category, setCategory] = useState('')
+   const [priceFrom, setPriceFrom] = useState('0')
+   const [priceTo, setPriceTo] = useState('1000')
+   const [colors, setColors] = useState([])
+   const [color, setColor] = useState('')
+   const [sizes, setSizes] = useState([])
+   const [size, setSize] = useState('')
+   const [brands, setBrands] = useState([])
+   const [brand, setBrand] = useState('')
+
+   // useEffect(() => {
+   //    const filterRange = document.querySelector('.price-filter__range');
+   //    if (filterRange && !filterRange.noUiSlider) {
+   //       const filterRangeFrom = document.querySelector('.price-filter__input--from');
+   //       const filterRangeTo = document.querySelector('.price-filter__input--to');
+
+   //       noUiSlider.create(filterRange, {
+   //          start: [0, 1000],
+   //          connect: true,
+   //          range: {
+   //             'min': 0,
+   //             'max': 1000
+   //          },
+   //          format: wNumb({
+   //             decimals: 0,
+   //             thousand: '',
+   //             prefix: ''
+   //          })
+   //       });
+
+   //       filterRange.noUiSlider.on('update', function (values) {
+   //          filterRangeFrom.value = `${values[0]}`;
+   //          filterRangeTo.value = `${values[1]}`;
+   //       });
+
+   //       filterRangeFrom.addEventListener('change', function () {
+   //          filterRange.noUiSlider.setHandle(0, filterRangeFrom.value);
+   //       });
+   //       filterRangeTo.addEventListener('change', function () {
+   //          filterRange.noUiSlider.setHandle(1, filterRangeTo.value);
+   //       });
+   //    }
+   // }, []);
 
    useEffect(() => {
-      const filterRange = document.querySelector('.price-filter__range');
-      if (filterRange && !filterRange.noUiSlider) {
-         const filterRangeFrom = document.querySelector('.price-filter__input--from');
-         const filterRangeTo = document.querySelector('.price-filter__input--to');
+      const fetchData = async () => {
+         try {
 
-         noUiSlider.create(filterRange, {
-            start: [0, 100],
-            connect: true,
-            range: {
-               'min': 0,
-               'max': 100
-            },
-            format: wNumb({
-               decimals: 0,
-               thousand: '',
-               prefix: '$'
+            const response = await apiServer.get('/products', {
+               params: { category, color, size, brand, priceFrom, priceTo }
             })
-         });
+            setProducts(response.data)
 
-         filterRange.noUiSlider.on('update', function (values) {
-            filterRangeFrom.value = `${values[0]}`;
-            filterRangeTo.value = `${values[1]}`;
-         });
+            const categoryResponse = await apiServer.get('/props/category')
+            setCategorys(categoryResponse.data)
 
-         filterRangeFrom.addEventListener('change', function () {
-            filterRange.noUiSlider.setHandle(0, filterRangeFrom.value);
-         });
-         filterRangeTo.addEventListener('change', function () {
-            filterRange.noUiSlider.setHandle(1, filterRangeTo.value);
-         });
+            const colorResponse = await apiServer.get('/props/color')
+            setColors(colorResponse.data)
+
+            const sizeResponse = await apiServer.get('/props/size')
+            setSizes(sizeResponse.data)
+
+            const brandResponse = await apiServer.get('/props/brand')
+            setBrands(brandResponse.data)
+         } catch (error) {
+            console.error('Error fetching data:', error)
+         }
       }
-   }, []);
+      fetchData()
+   }, [category, color, size, brand, priceFrom, priceTo])
 
    return (
       <main className="page">
@@ -48,40 +87,26 @@ const Catalog = () => {
                      <h4 data-spoller="open" data-spoller-media="max,991.98" className="filter__title title-filter">
                         <button type="button" className="title-filter__button title-filter__button--main _icon-filter">Filter</button>
                      </h4>
-                     <form action="#" className="filter__body">
+                     <form className="filter__body">
                         <div className="filter__section section-filter">
+                           <h5 data-spoller="open" className="section-filter__title title-filter">
+                              <button type="button" className="title-filter__button _icon-ch-down">Category</button>
+                           </h5>
                            <div className="section-filter__body">
-                              <nav className="section-filter__menu menu-filter">
-                                 <ul className="menu-filter__list">
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right active">Tops</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Printed T-shirts</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Plain T-shirts</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Kurti</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Tops</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Printed T-shirts</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Plain T-shirts</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="#" className="menu-filter__link _icon-ch-right">Kurti</Link>
-                                    </li>
-                                    <li className="menu-filter__item">
-                                       <Link to="/" className="menu-filter__link _icon-ch-right">Printed T-shirts</Link>
-                                    </li>
-                                 </ul>
-                              </nav>
+                              <div className="section-filter__style style-filter" >
+                                 {categorys.map((item) => (
+                                    <label className="style-filter__item _icon-ch-right" key={item._id}>
+                                       <input
+                                          type="radio"
+                                          name="category"
+                                          className="style-filter__input"
+                                          value={item.name}
+                                          onChange={(e) => setCategory(e.target.value)}
+                                       />
+                                       {item.name}
+                                    </label>
+                                 ))}
+                              </div>
                            </div>
                         </div>
                         <div className="filter__section section-filter">
@@ -92,8 +117,22 @@ const Catalog = () => {
                               <div className="section-filter__price price-filter">
                                  <div className="price-filter__range"></div>
                                  <div className="price-filter__inputs">
-                                    <input type="text" name="price-from" className="price-filter__input price-filter__input--from" />
-                                    <input type="text" name="price-to" className="price-filter__input price-filter__input--to" />
+                                    <input
+                                       type="text"
+                                       name="price-from"
+                                       placeholder='0'
+                                       className="price-filter__input price-filter__input--from"
+                                       // value={priceFrom}
+                                       onChange={(e) => setPriceFrom(e.target.value)}
+                                    />
+                                    <input
+                                       type="text"
+                                       name="price-to"
+                                       placeholder='1000'
+                                       className="price-filter__input price-filter__input--to"
+                                       // value={priceTo}
+                                       onChange={(e) => setPriceTo(e.target.value)}
+                                    />
                                  </div>
                               </div>
                            </div>
@@ -103,27 +142,19 @@ const Catalog = () => {
                               <button type="button" className="title-filter__button _icon-ch-down">Colors</button>
                            </h5>
                            <div className="section-filter__body">
-                              <div className="section-filter__colors colors-filter">
-                                 <label style={{ '--color': "#8434e1" }} className="colors-filter__item">
-                                    <input type="checkbox" name="color[]" className="colors-filter__input" />
-                                    Purple
-                                 </label>
-                                 <label style={{ '--color': '#000000' }} className="colors-filter__item">
-                                    <input type="checkbox" name="color[]" className="colors-filter__input" />
-                                    Black
-                                 </label>
-                                 <label style={{ '--color': "#F35528" }} className="colors-filter__item">
-                                    <input type="checkbox" name="color[]" className="colors-filter__input" />
-                                    Red
-                                 </label>
-                                 <label style={{ '--color': "#F16F2B" }} className="colors-filter__item">
-                                    <input type="checkbox" name="color[]" className="colors-filter__input" />
-                                    Orange
-                                 </label>
-                                 <label style={{ '--color': "#345EFF" }} className="colors-filter__item">
-                                    <input type="checkbox" name="color[]" className="colors-filter__input" />
-                                    Navy
-                                 </label>
+                              <div className="section-filter__colors colors-filter" >
+                                 {colors.map((item) => (
+                                    <label style={{ '--color': item.name }} className="colors-filter__item" key={item._id}>
+                                       <input
+                                          type="radio"
+                                          name="color"
+                                          className="colors-filter__input"
+                                          value={item.name}
+                                          onChange={(e) => setColor(e.target.value)}
+                                       />
+                                       {item.name}
+                                    </label>
+                                 ))}
                               </div>
                            </div>
                         </div>
@@ -133,47 +164,39 @@ const Catalog = () => {
                            </h5>
                            <div className="section-filter__body">
                               <div className="section-filter__size size-filter">
-                                 <label className="size-filter__item">
-                                    <input type="checkbox" name="size[]" className="size-filter__input" />
-                                    XXS
-                                 </label>
-                                 <label className="size-filter__item">
-                                    <input type="checkbox" name="size[]" className="size-filter__input" />
-                                    XS
-                                 </label>
-                                 <label className="size-filter__item">
-                                    <input type="checkbox" name="size[]" className="size-filter__input" />
-                                    S
-                                 </label>
-                                 <label className="size-filter__item">
-                                    <input type="checkbox" name="size[]" className="size-filter__input" />
-                                    m
-                                 </label>
-                                 <label className="size-filter__item">
-                                    <input type="checkbox" name="size[]" className="size-filter__input" />
-                                    l
-                                 </label>
+                                 {sizes.map((item) => (
+                                    <label className="size-filter__item" key={item._id}>
+                                       <input
+                                          type="radio"
+                                          name="size"
+                                          className="size-filter__input"
+                                          value={item.name}
+                                          onChange={(e) => setSize(e.target.value)}
+                                       />
+                                       {item.name}
+                                    </label>
+                                 ))}
                               </div>
                            </div>
                         </div>
                         <div className="filter__section section-filter">
                            <h5 data-spoller="open" className="section-filter__title title-filter">
-                              <button type="button" className="title-filter__button _icon-ch-down">Dress Style</button>
+                              <button type="button" className="title-filter__button _icon-ch-down">Brand</button>
                            </h5>
                            <div className="section-filter__body">
                               <div className="section-filter__style style-filter">
-                                 <label className="style-filter__item _icon-ch-right">
-                                    <input type="checkbox" name="style[]" className="style-filter__input" />
-                                    classNameic
-                                 </label>
-                                 <label className="style-filter__item _icon-ch-right">
-                                    <input type="checkbox" name="style[]" className="style-filter__input" />
-                                    Casual
-                                 </label>
-                                 <label className="style-filter__item _icon-ch-right">
-                                    <input type="checkbox" name="style[]" className="style-filter__input" />
-                                    Business
-                                 </label>
+                                 {brands.map((item) => (
+                                    <label className="style-filter__item _icon-ch-right" key={item._id}>
+                                       <input
+                                          type="checkbox"
+                                          name="style[]"
+                                          className="style-filter__input"
+                                          value={item.name}
+                                          onChange={(e) => setBrand(e.target.value)}
+                                       />
+                                       {item.name}
+                                    </label>
+                                 ))}
                               </div>
                            </div>
                         </div>
@@ -182,7 +205,7 @@ const Catalog = () => {
                   <div className="catalog__body">
                      <Link to="/addProduct" className="catalog__add-button button">Add procuct</Link>
                      <div className="catalog__header">
-                        <h1 className="catalog__title">Women’s Clothing</h1>
+                        <h1 className="catalog__title">Catalog</h1>
                         <ul className="catalog__type type-catalog">
                            <li className="type-catalog__item">
                               <button className="type-catalog__button type-catalog__button--active">New</button>
@@ -193,18 +216,20 @@ const Catalog = () => {
                         </ul>
                      </div>
                      <div className="catalog__items">
-                        <article className="item-product">
-                           <a href="#" className="item-product__picture-link">
-                              <img src="image/modules/for-men/01.jpg" className="item-product__image" alt="" />
-                           </a>
-                           <div className="item-product__body">
-                              <h4 className="item-product__title">
-                                 <a href="#" className="item-product__link-title">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo, molestias!</a>
-                              </h4>
-                              <div className="item-product__label">Explore Now!</div>
-                              <div className="item-product__price">$38.00</div>
-                           </div>
-                        </article>
+                        {products.map((item) => (
+                           < article className="item-product" key={item._id}>
+                              <Link to={`/productCard/${item._id}`} className="item-product__picture-link">
+                                 <img src={item.image} className="item-product__image" alt={item.name} />
+                              </Link>
+                              <div className="item-product__body">
+                                 <h4 className="item-product__title">
+                                    <span className="item-product__link-title">{item.name}</span>
+                                 </h4>
+                                 <div className="item-product__label">Explore Now!</div>
+                                 <div className="item-product__price">$ {item.price}</div>
+                              </div>
+                           </article>
+                        ))}
                      </div>
                   </div>
                </div>

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import carsRoutes from './carsRoutes.mjs'
+import productsRoutes from './productsRoutes.mjs'
 import propsRoutes from './propsRoutes/index.mjs'
 import authRoutes from './authRoutes.mjs'
 
@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   res.render('index', { user: req.user })
 })
 
-router.use('/cars', carsRoutes)
+router.use('/products', productsRoutes)
 router.use('/props', propsRoutes);
 router.use('/auth', authRoutes)
 

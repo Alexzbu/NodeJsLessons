@@ -101,19 +101,21 @@ const AddProductForm = () => {
       // if (!validateForm()) {
       //    return
       // }
-
       try {
          const formData = new FormData();
-         formData.append('brand', brand);
          formData.append('name', name);
          formData.append('price', price);
          formData.append('description', description);
+         formData.append('brand', brand);
+         formData.append('sex', sex);
+         formData.append('color', color);
+         formData.append('size', size);
          formData.append('category', category);
          if (image) {
             formData.append('productImage', image);
          }
 
-         const response = await apiServer.post(`/product/add/${id}`, formData, {
+         const response = await apiServer.post(`/products/add/${id}`, formData, {
             headers: {
                'Content-Type': 'multipart/form-data',
             },
@@ -138,13 +140,28 @@ const AddProductForm = () => {
                   type="text"
                   id="name"
                   name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                />
 
                <label className="form__label">Price:</label>
-               <input className="form__input" type="number" id="price" name="price" />
+               <input
+                  className="form__input"
+                  ype="number"
+                  id="price"
+                  name="price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+               />
 
                <label className="form__label">Description:</label>
-               <textarea className="form__textarea" id="description" name="description"></textarea>
+               <textarea
+                  className="form__textarea"
+                  id="description"
+                  name="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+               ></textarea>
 
                <label className="form__label">Brand:</label>
                <div className="form__select-wrapper">
@@ -161,7 +178,7 @@ const AddProductForm = () => {
                <label className="form__label">Sex:</label>
                <div className="form__select-wrapper">
                   <div className="form__select-item">
-                     <select name="sex" id="sex" className="form__select">
+                     <select value={sex} name="sex" id="sex" className="form__select" onChange={(e) => setSex(e.target.value)}>
                         {sexs.map((item) => (
                            < option value={item._id} key={item._id}>{item.name}</option>
                         ))}
@@ -173,7 +190,7 @@ const AddProductForm = () => {
                <label className="form__label">Color:</label>
                <div className="form__select-wrapper">
                   <div className="form__select-item">
-                     <select name="color" id="color" className="form__select">
+                     <select value={color} name="color" id="color" className="form__select" onChange={(e) => setColor(e.target.value)}>
                         {colors.map((item) => (
                            < option value={item._id} key={item._id}>{item.name}</option>
                         ))}
@@ -185,7 +202,7 @@ const AddProductForm = () => {
                <label className="form__label">Size:</label>
                <div className="form__select-wrapper">
                   <div className="form__select-item">
-                     <select name="size" id="size" className="form__select">
+                     <select value={size} name="size" id="size" className="form__select" onChange={(e) => setSize(e.target.value)}>
                         {sizes.map((item) => (
                            < option value={item._id} key={item._id}>{item.name}</option>
                         ))}
@@ -197,7 +214,7 @@ const AddProductForm = () => {
                <label className="form__label">Category:</label>
                <div className="form__select-wrapper">
                   <div className="form__select-item">
-                     <select name="category" id="category" className="form__select">
+                     <select value={category} name="category" id="category" className="form__select" onChange={(e) => setCategory(e.target.value)}>
                         {categorys.map((item) => (
                            < option value={item._id} key={item._id}>{item.name}</option>
                         ))}
@@ -207,9 +224,15 @@ const AddProductForm = () => {
                </div>
 
                <label className="form__label">Image:</label>
-               <input className="form__input" type="file" id="image" name="image" />
+               <input
+                  className="form__input"
+                  type="file"
+                  id="image"
+                  name="image"
+                  onChange={(e) => setImage(e.target.files[0])}
+               />
 
-               <button className="form__button button">
+               <button className="form__button button" onClick={sendForm}>
                   Add
                </button>
             </div>

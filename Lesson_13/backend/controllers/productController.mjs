@@ -1,17 +1,18 @@
-import CarService from '../services/CarService.mjs'
+import ProductService from '../services/ProductService.mjs'
 import { validationResult } from 'express-validator'
 
-class CarsController {
-  static async getCars(req, res) {
+class ProductController {
+  static async getProducts(req, res) {
     try {
-      const carsList = await CarService.getCarsList(req.query)
-      res.status(200).json(carsList)
+      const productsList = await ProductService.getProductsList(req.query)
+      res.status(200).json(productsList)
     } catch (err) {
       res.status(500).json({ error: err.message })
     }
   }
 
-  static async createCar(req, res) {
+  static async createProduct(req, res) {
+
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const errorMessages = {}
@@ -21,23 +22,23 @@ class CarsController {
       return res.status(400).json(errorMessages)
     }
 
-    const carData = req.body
+    const productData = req.body
     if (req.file?.buffer) {
-      carData.image = "data:image/jpeg;base64," + req.file.buffer.toString('base64')
+      productData.image = "data:image/jpeg;base64," + req.file.buffer.toString('base64')
     }
     if (req.params.id) {
-      await CarService.updateCar(req.params.id, carData)
+      await ProductService.updateCar(req.params.id, carData)
     } else {
-      await CarService.addNewCar(carData)
+      await ProductService.addNewProduct(productData)
     }
     res.status(200).json({ message: 'successful' })
   }
 
-  static async carDetail(req, res) {
+  static async procuctDetail(req, res) {
     try {
       const id = req.params.id
-      const car = await CarService.getCarById(id)
-      res.status(200).json({ car })
+      const product = await ProductService.getProductById(id)
+      res.status(200).json({ product })
     } catch (err) {
       res.status(500).json({ error: err.message })
     }
@@ -45,7 +46,7 @@ class CarsController {
 
   static async deleteCar(req, res) {
     try {
-      await CarService.deleteCar(req.params.id)
+      await ProductService.deleteCar(req.params.id)
       res.status(200).json({ message: 'successful' })
     } catch (err) {
       res.status(500).json({ error: err.message })
@@ -53,4 +54,4 @@ class CarsController {
   }
 }
 
-export default CarsController
+export default ProductController

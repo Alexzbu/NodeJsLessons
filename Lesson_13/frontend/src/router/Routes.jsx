@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import MainPage from '../views/MainPage'
 import Catalog from '../views/Catalog';
+import ProductCard from '../views/products/ProductCard';
 import AddProductForm from '../views/products/AddProductForm';
 import Props from '../views/props/Props';
 import AddPropsForm from '../views/props/AddPropsForm';
@@ -18,8 +19,8 @@ const AppRoutes = ({ isAuthenticated, setIsAuthenticated }) => {
       <Routes>
          <Route path="/" element={<MainPage />} />
          <Route path="/catalog" element={<Catalog isAuthenticated={isAuthenticated} />} />
-         {/* <Route path="/carsScroll" element={<CarsScroll isAuthenticated={isAuthenticated} />} />
-         <Route path="/carDetail/:id" element={<CarDetail />} /> */}
+         {/* <Route path="/carsScroll" element={<CarsScroll isAuthenticated={isAuthenticated} />} /> */}
+         <Route path="/productCard/:id" element={<ProductCard />} />
          <Route path="/addProduct/:id?"
             element={
                // <ProtectedRoute isAuthenticated={isAuthenticated}>
