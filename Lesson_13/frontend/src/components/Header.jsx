@@ -1,14 +1,14 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import apiServer from '../api/indexApi';
 
-const Header = ({ isAuthenticated, username, setIsAuthenticated }) => {
+const Header = ({ isAuthenticated, setIsAuthenticated }) => {
    const navigate = useNavigate();
 
    const handleLogout = () => {
       localStorage.removeItem('jwt_token')
       setIsAuthenticated(false)
       apiServer.defaults.headers.common['Authorization'] = `Bearer`
-      navigate('/cars');
+      navigate('/catalog');
    };
 
    return (
@@ -40,9 +40,19 @@ const Header = ({ isAuthenticated, username, setIsAuthenticated }) => {
                <input className="search-form__input" placeholder="Search" type="search" />
             </form>
             <div className="header__action action-header">
-               <NavLink to="#" className="action-header__item _icon-favorite"></NavLink>
-               <NavLink to="#" className="action-header__item _icon-user"></NavLink>
-               <NavLink to="#" className="action-header__item _icon-cart"></NavLink>
+               {isAuthenticated ? (
+                  <>
+                     <NavLink to="#" className="action-header__item _icon-favorite"></NavLink>
+                     <NavLink className="action-header__item _icon-user" onClick={handleLogout}></NavLink>
+                     <NavLink to="/cart" className="action-header__item _icon-cart"></NavLink>
+
+                  </>
+               ) : (
+                  <>
+                     <NavLink to="/login" className="button">Sign in</NavLink>
+                     <NavLink to="/register" className="button">Sign up</NavLink>
+                  </>
+               )}
             </div>
             <button className="icon-menu"><span></span></button>
          </div>

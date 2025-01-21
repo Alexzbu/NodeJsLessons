@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-// import noUiSlider from 'nouislider';
-// import wNumb from 'wnumb';
-import apiServer from '../api/indexApi';
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+// import noUiSlider from 'nouislider'
+// import wNumb from 'wnumb'
+import apiServer from '../api/indexApi'
+import Loading from '../components/Loading'
 
 const Catalog = () => {
    const [products, setProducts] = useState([])
@@ -16,6 +17,7 @@ const Catalog = () => {
    const [size, setSize] = useState('')
    const [brands, setBrands] = useState([])
    const [brand, setBrand] = useState('')
+   const [loading, setLoading] = useState(false)
 
    // useEffect(() => {
    //    const filterRange = document.querySelector('.price-filter__range');
@@ -54,11 +56,12 @@ const Catalog = () => {
    useEffect(() => {
       const fetchData = async () => {
          try {
-
+            setLoading(true)
             const response = await apiServer.get('/products', {
                params: { category, color, size, brand, priceFrom, priceTo }
             })
             setProducts(response.data)
+            setLoading(false)
 
             const categoryResponse = await apiServer.get('/props/category')
             setCategorys(categoryResponse.data)
@@ -216,10 +219,11 @@ const Catalog = () => {
                         </ul>
                      </div>
                      <div className="catalog__items">
+                        {products?.length === 0 && !loading && (<h2>NO MATCHES FOUND</h2>)}
                         {products.map((item) => (
                            < article className="item-product" key={item._id}>
                               <Link to={`/productCard/${item._id}`} className="item-product__picture-link">
-                                 <img src={item.image} className="item-product__image" alt={item.name} />
+                                 <img src={item.image[0]} className="item-product__image" alt={item.name} />
                               </Link>
                               <div className="item-product__body">
                                  <h4 className="item-product__title">
@@ -230,6 +234,7 @@ const Catalog = () => {
                               </div>
                            </article>
                         ))}
+                        {loading && <Loading />}
                      </div>
                   </div>
                </div>

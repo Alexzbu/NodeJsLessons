@@ -9,7 +9,7 @@ router.get('/', ProductController.getProducts)
 
 
 router.post('/add/:id?',
-    upload.single('productImage'),
+    upload.array('productImage', 5),
     // checkSchema(CarValidator.carSchema),
     ProductController.createProduct
 )
@@ -17,6 +17,7 @@ router.post('/add/:id?',
 // router.delete('/:id', CarsController.deleteCar)
 
 router.get('/details/:id', ProductController.procuctDetail)
+router.get('/props', ProductController.getProductProps)
 
 
 export default router

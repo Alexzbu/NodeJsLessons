@@ -2,8 +2,7 @@ import Product from '../models/Product.mjs'
 
 class ProductService {
   static async getProductsList(reqQuery) {
-    console.log(reqQuery)
-    const { sort = '_id', category = '', color = '', size = '', brand = '', priceFrom = 0, priceTo = 1000, page = 0, limit = 20 } = reqQuery;
+    const { name = '', sort = '_id', category = '', color = '', size = '', brand = '', priceFrom = 0, priceTo = 1000, page = 0, limit = 20 } = reqQuery;
     try {
       const pipeline = [
         {
@@ -54,6 +53,9 @@ class ProductService {
         },
       ];
 
+      if (name && color) {
+        pipeline.push({ $match: { 'name': name, 'color.name': color } })
+      }
       if (category) { pipeline.push({ $match: { 'category.name': category } }) }
       if (color) { pipeline.push({ $match: { 'color.name': color } }) }
       if (size) { pipeline.push({ $match: { 'size.name': size } }) }
@@ -70,13 +72,58 @@ class ProductService {
     }
   }
 
+  static async getProductPropsList(reqQuery) {
+    const { name = '' } = reqQuery;
+    try {
+      const pipeline = [
+        {
+          $lookup: {
+            from: 'colors',
+            localField: 'color',
+            foreignField: '_id',
+            as: 'color',
+          }
+        },
+        {
+          $lookup: {
+            from: 'sizes',
+            localField: 'size',
+            foreignField: '_id',
+            as: 'size',
+          }
+        },
+        {
+          $unwind: "$color"
+        },
+        {
+          $unwind: "$size"
+        },
+        {
+          $match: { name: { $eq: name } }
+        },
+        {
+          $group: {
+            _id: "$name",
+            colors: { $addToSet: "$color.name" },
+            sizes: { $addToSet: "$size.name" }
+          }
+        }
+      ];
+
+      return await Product.aggregate(pipeline);
+    } catch (error) {
+      console.error('Error fetching products list:', error);
+      throw new Error('Unable to fetch products list.');
+    }
+  }
+
   static async addNewProduct(data) {
     const product = new Product(data)
     return await product.save()
   }
 
   static async getProductById(id) {
-    return await Product.findById(id)
+    return await Product.findById(id).populate('color')
   }
 
   static async updateProduct(id, data) {

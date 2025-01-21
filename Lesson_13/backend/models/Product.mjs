@@ -28,7 +28,7 @@ const productSchema = new Schema({
   },
   color: {
     type: Schema.Types.ObjectId,
-    ref: 'Brand',
+    ref: 'Color',
   },
   size: {
     type: Schema.Types.ObjectId,
@@ -38,10 +38,10 @@ const productSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Category',
   },
-  image: {
+  image: [{
     type: String,
 
-  },
+  }],
 
 }, {
   timestamps: true

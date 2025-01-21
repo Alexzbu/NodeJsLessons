@@ -7,34 +7,89 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import apiServer from '../../api/indexApi'
 
-const ProductCard = () => {
+const ProductCard = ({ userId }) => {
    const { id = '' } = useParams()
+   const [productId, setProductId] = useState('')
    const [thumbsSwiper, setThumbsSwiper] = useState(null)
    const [name, setName] = useState('')
    const [price, setPrice] = useState('')
    const [description, setDescription] = useState('')
-   const [image, setImage] = useState('')
-
-   const slideCount = 5
-   const slides = Array.from({ length: slideCount })
+   const [images, setImages] = useState([])
+   const [colors, setColors] = useState([])
+   const [color, setColor] = useState('')
+   const [sizes, setSizes] = useState([])
 
    useEffect(() => {
       const fetchProduct = async () => {
          if (id) {
             try {
-               const response = await apiServer.get(`/products/details/${id}`)
-               console.log(response.data.product)
-               setName(response.data.product.name)
-               setPrice(response.data.product.price)
-               setDescription(response.data.product.description)
-               setImage(response.data.product.image)
+
+               const response = await apiServer.get(`/products/details/${id}`);
+               setProductId(response.data.product._id)
+               setName(response.data.product.name);
+               setPrice(response.data.product.price);
+               setDescription(response.data.product.description);
+               setColor(response.data.product.color.name);
+               setImages(response.data.product.image);
             } catch (error) {
-               console.error('Error fetching product data:', error)
+               console.error('Error fetching product data:', error);
+            }
+         }
+      };
+
+      fetchProduct();
+   }, [])
+
+   useEffect(() => {
+      const fetchProductByColor = async () => {
+         if (color) {
+            try {
+               const response = await apiServer.get(`/products`, {
+                  params: { name, color }
+               });
+               setProductId(response.data[0]._id)
+               setName(response.data[0].name);
+               setPrice(response.data[0].price);
+               setImages(response.data[0].image);
+            } catch (error) {
+               console.error('Error fetching product data:', error);
             }
          }
       }
-      fetchProduct()
-   }, [])
+
+      fetchProductByColor()
+   }, [color])
+
+   useEffect(() => {
+      const fetchProductProps = async () => {
+         if (name) {
+            try {
+               const propsResponse = await apiServer.get(`/products/props`, {
+                  params: { name },
+               });
+               setColors(propsResponse.data[0].colors)
+               setSizes(propsResponse.data[0].sizes)
+            } catch (error) {
+               console.error('Error fetching product props:', error);
+            }
+         }
+      };
+
+      fetchProductProps();
+   }, [name])
+
+   const addProductToCart = async () => {
+      try {
+         const response = await apiServer.post(`/cart/add`, {
+            params: { productId, userId }
+         })
+
+
+      } catch (error) {
+         console.error('Error sending data:', error);
+      }
+   }
+
    return (
       <main className="page">
          <div className="page__product product">
@@ -83,39 +138,42 @@ const ProductCard = () => {
                            <a href="#" className="sizes-product__guide _icon-a-right">Size Guide</a>
                         </div>
                         <div className="sizes-product__items">
-                           <label className="sizes-product__item">
-                              XS
-                              <input type="radio" value="xs" className="sizes-product__input" name="product-size" />
-                           </label>
-                           <label className="sizes-product__item">
-                              S
-                              <input type="radio" value="s" className="sizes-product__input" name="product-size" />
-                           </label>
-                           <label className="sizes-product__item">
-                              M
-                              <input type="radio" value="m" className="sizes-product__input" name="product-size" />
-                           </label>
-                           <label className="sizes-product__item">
-                              L
-                              <input type="radio" value="l" className="sizes-product__input" name="product-size" />
-                           </label>
-                           <label className="sizes-product__item">
-                              XL
-                              <input type="radio" value="xl" className="sizes-product__input" name="product-size" />
-                           </label>
+                           {sizes.map((item, index) => (
+                              <label className="sizes-product__item" key={index}>
+                                 {item}
+                                 <input type="radio" value={item} className="sizes-product__input" name="product-size" />
+                              </label>
+                           ))}
                         </div>
                      </div>
                      <div className="main-product__colors colors-product">
                         <h5 className="colors-product__title">Colours Available</h5>
                         <div className="colors-product__items">
-                           <label style={{ '--color': '#000000' }} className="colors-product__item">
-                              <input type="radio" value="#8434e1" className="colors-product__input" name="product-colors" />
-                           </label>
+                           {colors.map((item, index) => (
+                              <label style={{ '--color': item }} className="colors-product__item" key={index}>
+                                 <input
+                                    checked={item === color}
+                                    type="radio"
+                                    value={item}
+                                    className="colors-product__input"
+                                    name="product-colors"
+                                    onChange={(e) => setColor(e.target.value)}
+                                 />
+                              </label>
+                           ))}
                         </div>
                      </div>
                      <div className="main-product__footer">
-                        <button type="submit" className="main-product__button button"><span className="_icon-cart">Add to
-                           cart</span></button>
+                        <button
+                           type="submit"
+                           className="main-product__button button"
+                           onClick={addProductToCart}
+                        >
+                           <span
+                              className="_icon-cart"
+                           >Add to cart
+                           </span>
+                        </button>
                         <div className="main-product__price">${price}</div>
                      </div>
                      <div className="main-product__info info-product">
@@ -137,7 +195,7 @@ const ProductCard = () => {
                               speed={800}
                               className="thumb-slider__wrapper swiper-wrapper"
                            >
-                              {slides.map((_, index) => (
+                              {images.map((image, index) => (
                                  <SwiperSlide key={index}>
                                     <div className="thumb-slider__slide">
                                        <img src={image} className="thumb-slider__image" alt="Image" />
@@ -166,7 +224,7 @@ const ProductCard = () => {
                               }}
                               thumbs={{ swiper: thumbsSwiper }}
                            >
-                              {slides.map((_, index) => (
+                              {images.map((image, index) => (
                                  <SwiperSlide key={index}>
                                     <div className="main-product__slide">
                                        <img src={image} className="main-product__image" alt="Image" />

@@ -37,7 +37,7 @@ const Login = ({ setIsAuthenticated }) => {
          localStorage.setItem('jwt_token', response.data.token)
          if (response.status === 200) {
             setIsAuthenticated(true)
-            navigate('/cars')
+            navigate('/catalog')
          }
       } catch (error) {
          setErrors(error.response.data)

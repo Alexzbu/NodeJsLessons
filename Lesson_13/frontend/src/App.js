@@ -10,6 +10,7 @@ const App = () => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [username, setUsername] = useState('')
+  const [userId, setUserId] = useState('')
 
   useEffect(() => {
     const checkAuth = () => {
@@ -20,6 +21,7 @@ const App = () => {
           if (decoded.exp * 1000 > Date.now()) {
             setIsAuthenticated(true)
             setUsername(decoded.username)
+            setUserId(decoded.id)
             apiServer.defaults.headers.common['Authorization'] = `Bearer ${token}`
           } else {
             localStorage.removeItem('jwt_token')
@@ -41,7 +43,7 @@ const App = () => {
   return (
     <Router>
       <Header isAuthenticated={isAuthenticated} username={username} setIsAuthenticated={setIsAuthenticated} />
-      <AppRoutes isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
+      <AppRoutes isAuthenticated={isAuthenticated} userId={userId} setIsAuthenticated={setIsAuthenticated} />
       <Footer />
     </Router>
   )

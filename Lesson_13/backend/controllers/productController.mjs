@@ -11,8 +11,16 @@ class ProductController {
     }
   }
 
-  static async createProduct(req, res) {
+  static async getProductProps(req, res) {
+    try {
+      const productPropsList = await ProductService.getProductPropsList(req.query)
+      res.status(200).json(productPropsList)
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  }
 
+  static async createProduct(req, res) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const errorMessages = {}
@@ -23,15 +31,19 @@ class ProductController {
     }
 
     const productData = req.body
-    if (req.file?.buffer) {
-      productData.image = "data:image/jpeg;base64," + req.file.buffer.toString('base64')
+    if (req.files.length > 0) {
+      productData.image = req.files.map(file => "data:image/jpeg;base64," + file.buffer.toString('base64'))
     }
-    if (req.params.id) {
-      await ProductService.updateCar(req.params.id, carData)
-    } else {
-      await ProductService.addNewProduct(productData)
+    try {
+      if (req.params.id) {
+        await ProductService.updateCar(req.params.id, carData)
+      } else {
+        await ProductService.addNewProduct(productData)
+      }
+      res.status(200).json({ message: 'successful' })
+    } catch (err) {
+      res.status(500).json({ error: err.message })
     }
-    res.status(200).json({ message: 'successful' })
   }
 
   static async procuctDetail(req, res) {

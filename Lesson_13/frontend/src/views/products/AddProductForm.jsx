@@ -17,9 +17,13 @@ const AddProductForm = () => {
    const [size, setSize] = useState('')
    const [categorys, setCategorys] = useState([])
    const [category, setCategory] = useState('')
-   const [image, setImage] = useState(null)
    const [errors, setErrors] = useState({})
    const navigate = useNavigate()
+   const [images, setImages] = useState([]);
+
+   const handleFileChange = (e) => {
+      setImages(Array.from(e.target.files))
+   }
 
    useEffect(() => {
       const fetchProduct = async () => {
@@ -111,10 +115,11 @@ const AddProductForm = () => {
          formData.append('color', color);
          formData.append('size', size);
          formData.append('category', category);
-         if (image) {
-            formData.append('productImage', image);
+         if (images.length > 0) {
+            for (let i = 0; i < images.length; i++) {
+               formData.append('productImage', images[i]);
+            }
          }
-
          const response = await apiServer.post(`/products/add/${id}`, formData, {
             headers: {
                'Content-Type': 'multipart/form-data',
@@ -134,35 +139,6 @@ const AddProductForm = () => {
          <div className="add-product__container">
             <h1 className="add-product__title title">Add new product</h1>
             <div className="form">
-
-               <label className="form__label">Name:</label>
-               <input className="form__input"
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-               />
-
-               <label className="form__label">Price:</label>
-               <input
-                  className="form__input"
-                  ype="number"
-                  id="price"
-                  name="price"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-               />
-
-               <label className="form__label">Description:</label>
-               <textarea
-                  className="form__textarea"
-                  id="description"
-                  name="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-               ></textarea>
-
                <label className="form__label">Brand:</label>
                <div className="form__select-wrapper">
                   <div className="form__select-item">
@@ -222,14 +198,46 @@ const AddProductForm = () => {
                   </div>
                   <Link className="form__link menu__link" to="/props/?title=category">Edit</Link>
                </div>
+               <label className="form__label">Name:</label>
+               <input className="form__input"
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+               />
 
-               <label className="form__label">Image:</label>
+               <label className="form__label">Price:</label>
+               <input
+                  className="form__input"
+                  ype="number"
+                  id="price"
+                  name="price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+               />
+
+               <label className="form__label">Description:</label>
+               <textarea
+                  className="form__textarea"
+                  id="description"
+                  name="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+               ></textarea>
+               <ul>
+                  {images.map((file, index) => (
+                     <li key={index}>{file.name}</li>
+                  ))}
+               </ul>
+               <label className="form__label" htmlFor="image">Image:</label>
                <input
                   className="form__input"
                   type="file"
                   id="image"
                   name="image"
-                  onChange={(e) => setImage(e.target.files[0])}
+                  multiple
+                  onChange={handleFileChange}
                />
 
                <button className="form__button button" onClick={sendForm}>
