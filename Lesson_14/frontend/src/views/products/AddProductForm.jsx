@@ -34,7 +34,7 @@ const AddProductForm = () => {
          //       setYear(response.data.car.year)
          //       setPrice(response.data.car.price)
          //       setDescription(response.data.car.description)
-         //       setLocation(response.data.car.location?._id)
+         //       setLocation(response.data.car.location?.id)
          //    } catch (error) {
          //       console.error('Error fetching car data:', error)
          //    }
@@ -44,23 +44,23 @@ const AddProductForm = () => {
          try {
             const brandResponse = await apiServer.get('/props/brand')
             setBrands(brandResponse.data)
-            setBrand(brandResponse.data[0]._id)
+            setBrand(brandResponse.data[0].id)
 
             const sexResponse = await apiServer.get('/props/sex')
             setSexs(sexResponse.data)
-            setSex(sexResponse.data[0]._id)
+            setSex(sexResponse.data[0].id)
 
             const colorResponse = await apiServer.get('/props/color')
             setColors(colorResponse.data)
-            setColor(colorResponse.data[0]._id)
+            setColor(colorResponse.data[0].id)
 
             const sizeResponse = await apiServer.get('/props/size')
             setSizes(sizeResponse.data)
-            setSize(sizeResponse.data[0]._id)
+            setSize(sizeResponse.data[0].id)
 
             const categoryResponse = await apiServer.get('/props/category')
             setCategorys(categoryResponse.data)
-            setCategory(categoryResponse.data[0]._id)
+            setCategory(categoryResponse.data[0].id)
          } catch (error) {
             console.error('Error fetching props:', error)
          }
@@ -144,7 +144,7 @@ const AddProductForm = () => {
                   <div className="form__select-item">
                      <select value={brand} name="brand" id="brand" className="form__select" onChange={(e) => setBrand(e.target.value)}>
                         {brands.map((item) => (
-                           < option value={item._id} key={item._id}>{item.name}</option>
+                           < option value={item.id} key={item.id}>{item.name}</option>
                         ))}
                      </select>
                   </div>
@@ -156,7 +156,7 @@ const AddProductForm = () => {
                   <div className="form__select-item">
                      <select value={sex} name="sex" id="sex" className="form__select" onChange={(e) => setSex(e.target.value)}>
                         {sexs.map((item) => (
-                           < option value={item._id} key={item._id}>{item.name}</option>
+                           < option value={item.id} key={item.id}>{item.name}</option>
                         ))}
                      </select>
                   </div>
@@ -168,7 +168,7 @@ const AddProductForm = () => {
                   <div className="form__select-item">
                      <select value={color} name="color" id="color" className="form__select" onChange={(e) => setColor(e.target.value)}>
                         {colors.map((item) => (
-                           < option value={item._id} key={item._id}>{item.name}</option>
+                           < option value={item.id} key={item.id}>{item.name}</option>
                         ))}
                      </select>
                   </div>
@@ -180,7 +180,7 @@ const AddProductForm = () => {
                   <div className="form__select-item">
                      <select value={size} name="size" id="size" className="form__select" onChange={(e) => setSize(e.target.value)}>
                         {sizes.map((item) => (
-                           < option value={item._id} key={item._id}>{item.name}</option>
+                           < option value={item.id} key={item.id}>{item.name}</option>
                         ))}
                      </select>
                   </div>
@@ -192,7 +192,7 @@ const AddProductForm = () => {
                   <div className="form__select-item">
                      <select value={category} name="category" id="category" className="form__select" onChange={(e) => setCategory(e.target.value)}>
                         {categorys.map((item) => (
-                           < option value={item._id} key={item._id}>{item.name}</option>
+                           < option value={item.id} key={item.id}>{item.name}</option>
                         ))}
                      </select>
                   </div>

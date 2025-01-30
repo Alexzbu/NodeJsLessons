@@ -25,11 +25,11 @@ const ProductCard = ({ userId }) => {
             try {
 
                const response = await apiServer.get(`/products/details/${id}`);
-               setProductId(response.data.product._id)
+               setProductId(response.data.product.id)
                setName(response.data.product.name);
                setPrice(response.data.product.price);
                setDescription(response.data.product.description);
-               setColor(response.data.product.color.name);
+               setColor(response.data.product.color_name);
                setImages(response.data.product.image);
             } catch (error) {
                console.error('Error fetching product data:', error);
@@ -40,25 +40,25 @@ const ProductCard = ({ userId }) => {
       fetchProduct();
    }, [])
 
-   useEffect(() => {
-      const fetchProductByColor = async () => {
-         if (color) {
-            try {
-               const response = await apiServer.get(`/products`, {
-                  params: { name, color }
-               });
-               setProductId(response.data[0]._id)
-               setName(response.data[0].name);
-               setPrice(response.data[0].price);
-               setImages(response.data[0].image);
-            } catch (error) {
-               console.error('Error fetching product data:', error);
-            }
-         }
-      }
+   // useEffect(() => {
+   //    const fetchProductByColor = async () => {
+   //       if (color) {
+   //          try {
+   //             const response = await apiServer.get(`/products`, {
+   //                params: { name, color }
+   //             });
+   //             setProductId(response.data[0].id)
+   //             setName(response.data[0].name);
+   //             setPrice(response.data[0].price);
+   //             setImages(response.data[0].image);
+   //          } catch (error) {
+   //             console.error('Error fetching product data:', error);
+   //          }
+   //       }
+   //    }
 
-      fetchProductByColor()
-   }, [color])
+   //    fetchProductByColor()
+   // }, [color])
 
    useEffect(() => {
       const fetchProductProps = async () => {
@@ -67,8 +67,8 @@ const ProductCard = ({ userId }) => {
                const propsResponse = await apiServer.get(`/products/props`, {
                   params: { name },
                });
-               setColors(propsResponse.data[0].colors)
-               setSizes(propsResponse.data[0].sizes)
+               setColors(propsResponse.data.colors)
+               setSizes(propsResponse.data.sizes)
             } catch (error) {
                console.error('Error fetching product props:', error);
             }

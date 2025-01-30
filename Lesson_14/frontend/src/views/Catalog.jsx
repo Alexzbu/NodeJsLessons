@@ -98,7 +98,7 @@ const Catalog = () => {
                            <div className="section-filter__body">
                               <div className="section-filter__style style-filter" >
                                  {categorys.map((item) => (
-                                    <label className="style-filter__item _icon-ch-right" key={item._id}>
+                                    <label className="style-filter__item _icon-ch-right" key={item.id}>
                                        <input
                                           type="radio"
                                           name="category"
@@ -147,7 +147,7 @@ const Catalog = () => {
                            <div className="section-filter__body">
                               <div className="section-filter__colors colors-filter" >
                                  {colors.map((item) => (
-                                    <label style={{ '--color': item.name }} className="colors-filter__item" key={item._id}>
+                                    <label style={{ '--color': item.name }} className="colors-filter__item" key={item.id}>
                                        <input
                                           type="radio"
                                           name="color"
@@ -168,7 +168,7 @@ const Catalog = () => {
                            <div className="section-filter__body">
                               <div className="section-filter__size size-filter">
                                  {sizes.map((item) => (
-                                    <label className="size-filter__item" key={item._id}>
+                                    <label className="size-filter__item" key={item.id}>
                                        <input
                                           type="radio"
                                           name="size"
@@ -189,7 +189,7 @@ const Catalog = () => {
                            <div className="section-filter__body">
                               <div className="section-filter__style style-filter">
                                  {brands.map((item) => (
-                                    <label className="style-filter__item _icon-ch-right" key={item._id}>
+                                    <label className="style-filter__item _icon-ch-right" key={item.id}>
                                        <input
                                           type="checkbox"
                                           name="style[]"
@@ -221,8 +221,8 @@ const Catalog = () => {
                      <div className="catalog__items">
                         {products?.length === 0 && !loading && (<h2>NO MATCHES FOUND</h2>)}
                         {products.map((item) => (
-                           < article className="item-product" key={item._id}>
-                              <Link to={`/productCard/${item._id}`} className="item-product__picture-link">
+                           < article className="item-product" key={item.id}>
+                              <Link to={`/productCard/${item.id}`} className="item-product__picture-link">
                                  <img src={item.image[0]} className="item-product__image" alt={item.name} />
                               </Link>
                               <div className="item-product__body">

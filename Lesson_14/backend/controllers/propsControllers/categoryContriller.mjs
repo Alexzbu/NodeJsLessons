@@ -5,7 +5,6 @@ class CategoryController {
 	static async getCategorys(req, res) {
 		try {
 			const categorysList = await CategoryService.getCategorysList()
-
 			res.status(200).json(categorysList)
 		} catch (err) {
 			res.status(500).json({ error: err.message })
@@ -34,7 +33,7 @@ class CategoryController {
 
 		const category = req.body
 		if (req.params.id) {
-			await LocationService.updateLocation(req.params.id, locationData)
+			await LocationService.updateLocation(req.params.id, category)
 		} else {
 			await CategoryService.addNewCategory(category)
 		}
