@@ -11,34 +11,49 @@ const Cart = ({ isAuthenticated, userId }) => {
    const [totalPages, setTotalPages] = useState(0)
    const [loading, setLoading] = useState(false)
    const [del, setDel] = useState(false)
+   const [add, setAdd] = useState(false)
    const navigate = useNavigate()
    const limit = 6
 
    useEffect(() => {
       const fetchData = async () => {
          try {
-            // setLoading(true)
-            // setDel(false)
+            setLoading(true)
             const response = await apiServer.get('/cart', {
                params: { userId }
             });
             console.log(response.data.productList)
             setProductList(response.data.productList)
             // setTotalPages(Math.ceil(response.data.count / limit) > 1 ? Math.ceil(response.data.count / limit) : 0)
-            // setLoading(false)
+            setLoading(false)
          } catch (error) {
             console.error('Error fetching data:', error)
          }
       }
 
       fetchData();
-   }, [])
+   }, [add, del])
 
-   const deleteItem = async (id) => {
+   const updateProductAmount = async (productId, amount) => {
       try {
-         const response = await apiServer.delete(`/cars/${id}`)
+         setLoading(true)
+         const response = await apiServer.post(`/cart/update`, {
+            params: { productId, amount, userId }
+         })
+         setLoading(false)
+         setAdd((prev) => !prev)
+      } catch (error) {
+         console.error('Error sending data:', error);
+      }
+   }
+
+   const deleteItem = async (productId) => {
+      try {
+         const response = await apiServer.post(`/cart/delete`, {
+            params: { productId, userId }
+         })
          if (response.status === 200) {
-            setDel(true)
+            setDel((prev) => !prev)
          }
       } catch (error) {
          console.error('Error deleting data:', error)
@@ -46,55 +61,72 @@ const Cart = ({ isAuthenticated, userId }) => {
    }
 
    return (
-      <main class="page">
-         <div class="page__cart cart">
-            <div class="cart__header header-cart">
-               <div class="header-cart__container">
-                  <ul class="header-cart__titels titles">
-                     <li class="titles__item">Product Details</li>
-                     <li class="titles__item">Price</li>
-                     <li class="titles__item">Quantity</li>
-                     <li class="titles__item">shipping</li>
-                     <li class="titles__item">subtotal</li>
-                     <li class="titles__item">action</li>
+      <main className="page">
+         <div className="page__cart cart">
+            <div className="cart__header header-cart">
+               <div className="header-cart__container">
+                  <ul className="header-cart__titels titles">
+                     <li className="titles__item titles__item--details">Product Details</li>
+                     <li className="titles__item titles__item--price">Price</li>
+                     <li className="titles__item titles__item--quantity">Quantity</li>
+                     <li className="titles__item titles__item--shipping">shipping</li>
+                     <li className="titles__item titles__item--subtotal">subtotal</li>
+                     <li className="titles__item titles__item--action">action</li>
                   </ul>
                </div>
             </div>
-            <div class="cart__body body-cart">
-               <div class="body-cart__container">
-                  <div class="body-cart__items">
+            <div className="cart__body body-cart">
+               <div className="body-cart__container">
+                  <div className="body-cart__items">
+                     {loading && <Loading />}
                      {productList.map((item) => (
-                        <div class="body-cart__item item">
-                           <div class="item__details details">
-                              <div class="details__image">
-                                 <a href="#"><img src={item.product.image[0]} alt="" /></a>
-                              </div>
-                              <div class="details__content content-details">
-                                 <h3 class="content-details__titel">{item.product.name}</h3>
-                                 <h4 class="content-details__color">{item.product.color.name}</h4>
-                                 <h4 class="content-details__size">{item.product.size.name}</h4>
+                        <div className="body-cart__item item" key={item.product._id}>
+                           <div className="item__details details">
+                              <Link to={`/productCard/${item.product._id}`}>
+                                 <img className="details__image" src={item.product.image[0]} alt="" />
+                              </Link>
+                              <div className="details__content content-details">
+                                 <h3 className="content-details__titel">{item.product.name}</h3>
+                                 <h4 className="content-details__color">{item.product.color.name}</h4>
+                                 <h4 className="content-details__size">{item.product.size.name}</h4>
                               </div>
                            </div>
-                           <div class="item__price">${item.product.price}</div>
-                           <div class="item__quantyty">
-                              <button class="item__button item__button--minus">-</button>
-                              <div class="item__count">{item.amount}</div>
-                              <button class="item__button item__button--plus">+</button>
+                           <div className="item__price">${item.product.price}</div>
+                           <div className="item__quantyty">
+                              <button
+                                 className="item__button item__button--minus"
+                                 disabled={item.amount <= 1}
+                                 onClick={() => updateProductAmount(item.product._id, item.amount - 1)}
+                              >
+                                 -
+                              </button>
+                              <div className="item__count">{item.amount}</div>
+                              <button
+                                 className="item__button item__button--plus"
+                                 disabled={loading}
+                                 onClick={() => updateProductAmount(item.product._id, item.amount + 1)}
+                              >+
+                              </button>
                            </div>
-                           <div class="item__shipping">FREE</div>
-                           <div class="item__subtotal">${item.amount * (item.product?.price)}</div>
-                           <div class="item__trash">
-                              <a href="#" class="item__link _icon-trash"></a>
+                           <div className="item__shipping">FREE</div>
+                           <div className="item__subtotal">${item.amount * (item.product?.price)}</div>
+                           <div className="item__trash">
+                              <button
+                                 className="item__link _icon-trash"
+                                 onClick={() => deleteItem(item.product._id)}
+                              >
+
+                              </button>
                            </div>
                         </div>
                      ))}
                   </div>
-                  <div class="cart-footer">
-                     <div class="cart-footer__content">
-                        <span class="cart-footer__title-summe">Total:  </span>
-                        <span class="cart-footer__summe">$518</span>
+                  <div className="cart-footer">
+                     <div className="cart-footer__content">
+                        <span className="cart-footer__title-summe">Total:  </span>
+                        <span className="cart-footer__summe">$518</span>
                      </div>
-                     <button class="cart-footer__button button">Proceed To Checkout</button>
+                     <button className="cart-footer__button button">Proceed To Checkout</button>
                   </div>
                </div>
             </div>

@@ -6,11 +6,7 @@ router.get('/', CartController.getProducts)
 
 
 router.post('/add', CartController.addProduct)
-
-// router.delete('/:id', CarsController.deleteCar)
-
-// router.get('/details/:id', ProductController.procuctDetail)
-// router.get('/props', ProductController.getProductProps)
-
+router.post('/update', CartController.updateProductAmount)
+router.post('/delete', CartController.deleteProduct)
 
 export default router

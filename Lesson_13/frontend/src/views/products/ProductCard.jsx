@@ -9,6 +9,7 @@ import apiServer from '../../api/indexApi'
 
 const ProductCard = ({ userId }) => {
    const { id = '' } = useParams()
+   const [loading, setLoading] = useState(false)
    const [productId, setProductId] = useState('')
    const [thumbsSwiper, setThumbsSwiper] = useState(null)
    const [name, setName] = useState('')
@@ -23,7 +24,6 @@ const ProductCard = ({ userId }) => {
       const fetchProduct = async () => {
          if (id) {
             try {
-
                const response = await apiServer.get(`/products/details/${id}`);
                setProductId(response.data.product._id)
                setName(response.data.product.name);
@@ -80,11 +80,11 @@ const ProductCard = ({ userId }) => {
 
    const addProductToCart = async () => {
       try {
+         setLoading(true)
          const response = await apiServer.post(`/cart/add`, {
             params: { productId, userId }
          })
-
-
+         setLoading(false)
       } catch (error) {
          console.error('Error sending data:', error);
       }
@@ -95,7 +95,7 @@ const ProductCard = ({ userId }) => {
          <div className="page__product product">
             <section className="product__main main-product">
                <div className="main-product__container">
-                  <form action="#" className="main-product__body">
+                  <div className="main-product__body">
                      <ul className="main-product__breadcrumbs breadcrumbs">
                         <li className="breadcrumbs__item _icon-ch-right">
                            <a href="#" className="breadcrumbs__link">Shop</a>
@@ -165,13 +165,13 @@ const ProductCard = ({ userId }) => {
                      </div>
                      <div className="main-product__footer">
                         <button
-                           type="submit"
                            className="main-product__button button"
+                           disabled={loading}
                            onClick={addProductToCart}
                         >
                            <span
                               className="_icon-cart"
-                           >Add to cart
+                           >{loading ? "Adding..." : "Add to cart"}
                            </span>
                         </button>
                         <div className="main-product__price">${price}</div>
@@ -182,7 +182,7 @@ const ProductCard = ({ userId }) => {
                         <div className="info-product__item _icon-truck">Free shipping</div>
                         <div className="info-product__item _icon-free-shiping">Free Shipping & Returns</div>
                      </div>
-                  </form>
+                  </div>
                   <div className="main-product__images">
                      <div className="main-product__thumb-slider thumb-slider">
                         <div className="thumb-slider__slider swiper">

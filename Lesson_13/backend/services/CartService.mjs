@@ -18,21 +18,20 @@ class CartService {
   }
 
   static async addProduct(userId, productId) {
+
     try {
       let cart = await Cart.findOne({ customer: userId })
       if (cart) {
         const productIndex = cart.productList.findIndex(
           (item) => item.product.toString() === productId
         )
-
-        if (productIndex > 1) {
+        if (productIndex >= 0) {
           cart.productList[productIndex].amount += 1
         } else {
           cart.productList.push({ product: productId, amount: 1 })
         }
         return await cart.save()
       } else {
-        console.log(userId)
         return await Cart.create({
           customer: userId,
           productList: [{ product: productId, amount: 1 }]
@@ -43,6 +42,58 @@ class CartService {
       throw error
     }
   }
+
+  static async updateProductAmount(userId, productId, amount) {
+
+    try {
+      let cart = await Cart.findOne({ customer: userId })
+      if (cart) {
+        const productIndex = cart.productList.findIndex(
+          (item) => item.product.toString() === productId
+        )
+        cart.productList[productIndex].amount = amount
+
+        return await cart.save()
+      }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
+  static async deleteProduct(userId, productId) {
+    try {
+      // Find the cart
+      console.log(userId)
+
+      let cart = await Cart.findOne({ customer: userId });
+
+      if (!cart) {
+        throw new Error("Cart not found");
+      }
+
+      // Filter out the product from productsList
+      const updatedProductsList = cart.productList.filter(
+        (item) => item.product.toString() !== productId
+      );
+
+      // Check if the product was actually removed
+      if (updatedProductsList.length === cart.productList.length) {
+        throw new Error("Product not found in cart");
+      }
+
+      // Update the cart and save
+      cart.productList = updatedProductsList;
+      await cart.save();
+
+      console.log("Updated cart:", cart);
+      return cart;
+    } catch (error) {
+      console.error("Error deleting product:", error.message);
+      throw new Error("Failed to delete product");
+    }
+  }
+
 }
 
 

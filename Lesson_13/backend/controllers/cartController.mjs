@@ -6,7 +6,6 @@ class CartController {
     try {
       const { userId } = req.query
       const productsList = await CartService.getCart(userId)
-      console.log(productsList)
       res.status(200).json(productsList)
     } catch (err) {
       res.status(500).json({ error: err.message })
@@ -24,9 +23,24 @@ class CartController {
     }
   }
 
-  static async deleteCar(req, res) {
+  static async updateProductAmount(req, res) {
+    const userId = req.body.params.userId
+    const productId = req.body.params.productId
+    const amount = req.body.params.amount
     try {
-      await CartService.deleteCar(req.params.id)
+      await CartService.updateProductAmount(userId, productId, amount)
+      res.status(200).json({ message: 'successful' })
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  }
+
+  static async deleteProduct(req, res) {
+    const userId = req.body.params.userId
+    const productId = req.body.params.productId
+    try {
+      console.log(userId)
+      await CartService.deleteProduct(userId, productId)
       res.status(200).json({ message: 'successful' })
     } catch (err) {
       res.status(500).json({ error: err.message })
