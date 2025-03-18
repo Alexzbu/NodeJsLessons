@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import apiServer from '../api/indexApi';
 
-const Header = ({ isAuthenticated, setIsAuthenticated }) => {
+const Header = ({ isAuthenticated, setIsAuthenticated, productList }) => {
    const navigate = useNavigate();
 
    const handleLogout = () => {
@@ -44,7 +44,11 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   <>
                      <NavLink to="#" className="action-header__item _icon-favorite"></NavLink>
                      <NavLink className="action-header__item _icon-user" onClick={handleLogout}></NavLink>
-                     <NavLink to="/cart" className="action-header__item _icon-cart"></NavLink>
+                     <NavLink to="/cart" className="action-header__item _icon-cart">
+                        {productList.length > 0 && (
+                           <span>{productList.reduce((total, item) => total + item.amount, 0)}</span>
+                        )}
+                     </NavLink>
 
                   </>
                ) : (

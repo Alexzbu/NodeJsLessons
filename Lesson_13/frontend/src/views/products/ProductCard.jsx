@@ -7,7 +7,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import apiServer from '../../api/indexApi'
 
-const ProductCard = ({ userId }) => {
+const ProductCard = ({ userId, setAdd }) => {
    const { id = '' } = useParams()
    const [loading, setLoading] = useState(false)
    const [productId, setProductId] = useState('')
@@ -85,6 +85,7 @@ const ProductCard = ({ userId }) => {
             params: { productId, userId }
          })
          setLoading(false)
+         setAdd((prev) => !prev)
       } catch (error) {
          console.error('Error sending data:', error);
       }

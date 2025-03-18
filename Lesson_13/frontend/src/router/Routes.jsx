@@ -15,13 +15,23 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
    return isAuthenticated ? children : <Navigate to="/login" />
 }
 
-const AppRoutes = ({ isAuthenticated, setIsAuthenticated, userId }) => {
+const AppRoutes = ({ isAuthenticated, setIsAuthenticated, userId, productList, setProductList, setAdd, setDel }) => {
    return (
       <Routes>
          <Route path="/" element={<MainPage />} />
          <Route path="/catalog" element={<Catalog isAuthenticated={isAuthenticated} />} />
-         <Route path="/cart" element={<Cart isAuthenticated={isAuthenticated} userId={userId} />} />
-         <Route path="/productCard/:id" element={<ProductCard userId={userId} />} />
+         <Route path="/cart"
+            element={
+               <Cart
+                  isAuthenticated={isAuthenticated}
+                  userId={userId}
+                  productList={productList}
+                  setProductList={setProductList}
+                  setAdd={setAdd}
+                  setDel={setDel}
+               />}
+         />
+         <Route path="/productCard/:id" element={<ProductCard userId={userId} setAdd={setAdd} />} />
          <Route path="/addProduct/:id?"
             element={
                // <ProtectedRoute isAuthenticated={isAuthenticated}>

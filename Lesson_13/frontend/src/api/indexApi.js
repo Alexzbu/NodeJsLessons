@@ -5,6 +5,7 @@ const apiServer = axios.create({
    headers: {
       'Content-Type': 'application/json',
       // 'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
+      // 'https://euphoria-back.onrender.com/api/'
    },
 });
 
