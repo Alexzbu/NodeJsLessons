@@ -4,7 +4,7 @@ import apiServer from '../../api/indexApi'
 import Loading from '../../components/Loading'
 import EmptyCart from '../../components/EmptyCart'
 
-const Cart = ({ productList, setAdd, setDel, userId }) => {
+const Cart = ({ productList, setAdd, setDel, user }) => {
    const [loading, setLoading] = useState(false)
 
 
@@ -12,7 +12,7 @@ const Cart = ({ productList, setAdd, setDel, userId }) => {
       try {
          setLoading(true)
          const response = await apiServer.post(`/cart/update`, {
-            params: { productId, amount, userId }
+            params: { productId, amount, userId: user.id }
          })
          setLoading(false)
          setAdd((prev) => !prev)
@@ -24,7 +24,7 @@ const Cart = ({ productList, setAdd, setDel, userId }) => {
    const deleteItem = async (productId) => {
       try {
          const response = await apiServer.post(`/cart/delete`, {
-            params: { productId, userId }
+            params: { productId, userId: user.id }
          })
          if (response.status === 200) {
             setDel((prev) => !prev)
@@ -102,7 +102,10 @@ const Cart = ({ productList, setAdd, setDel, userId }) => {
                      <div className="cart-footer">
                         <div className="cart-footer__content">
                            <span className="cart-footer__title-summe">Total:  </span>
-                           <span className="cart-footer__summe">$518</span>
+                           <span
+                              className="cart-footer__summe"
+                           >$ {productList.reduce((total, item) => total + (item.amount * (item.product?.price)), 0)}
+                           </span>
                         </div>
                         <button className="cart-footer__button button">Proceed To Checkout</button>
                      </div>

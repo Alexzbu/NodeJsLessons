@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom'
 // import wNumb from 'wnumb'
 import apiServer from '../api/indexApi'
 import Loading from '../components/Loading'
+import { userType } from '../constants/userType.mjs'
+import { filterSpoller } from '../utils/spollers/filterSpoller.mjs'
 
-const Catalog = () => {
+const Catalog = ({ user }) => {
    const [products, setProducts] = useState([])
-   const [categorys, setCategorys] = useState([])
+   const [categories, setCategories] = useState([])
    const [category, setCategory] = useState('')
    const [priceFrom, setPriceFrom] = useState('0')
    const [priceTo, setPriceTo] = useState('1000')
@@ -54,6 +56,7 @@ const Catalog = () => {
    // }, []);
 
    useEffect(() => {
+      filterSpoller()
       const fetchData = async () => {
          try {
             setLoading(true)
@@ -61,23 +64,24 @@ const Catalog = () => {
                params: { category, color, size, brand, priceFrom, priceTo }
             })
             setProducts(response.data)
-            setLoading(false)
+            const [categoryResponse, colorResponse, sizeResponse, brandResponse] = await Promise.all([
+               apiServer.get('/props/category'),
+               apiServer.get('/props/color'),
+               apiServer.get('/props/size'),
+               apiServer.get('/props/brand')
+            ]);
 
-            const categoryResponse = await apiServer.get('/props/category')
-            setCategorys(categoryResponse.data)
-
-            const colorResponse = await apiServer.get('/props/color')
-            setColors(colorResponse.data)
-
-            const sizeResponse = await apiServer.get('/props/size')
-            setSizes(sizeResponse.data)
-
-            const brandResponse = await apiServer.get('/props/brand')
-            setBrands(brandResponse.data)
+            setCategories(categoryResponse.data);
+            setColors(colorResponse.data);
+            setSizes(sizeResponse.data);
+            setBrands(brandResponse.data);
          } catch (error) {
-            console.error('Error fetching data:', error)
+            console.error('Error fetching data:', error);
+         } finally {
+            setLoading(false);
          }
       }
+      window.scrollTo(0, 0)
       fetchData()
    }, [category, color, size, brand, priceFrom, priceTo])
 
@@ -97,7 +101,7 @@ const Catalog = () => {
                            </h5>
                            <div className="section-filter__body">
                               <div className="section-filter__style style-filter" >
-                                 {categorys.map((item) => (
+                                 {categories.map((item) => (
                                     <label className="style-filter__item _icon-ch-right" key={item._id}>
                                        <input
                                           type="radio"
@@ -206,7 +210,9 @@ const Catalog = () => {
                      </form>
                   </aside>
                   <div className="catalog__body">
-                     <Link to="/addProduct" className="catalog__add-button button">Add procuct</Link>
+                     {user?.role === userType.ADMIN &&
+                        <Link to="/addProduct" className="catalog__add-button button">Add procuct</Link>
+                     }
                      <div className="catalog__header">
                         <h1 className="catalog__title">Catalog</h1>
                         <ul className="catalog__type type-catalog">
@@ -240,6 +246,7 @@ const Catalog = () => {
                </div>
             </section>
          </div >
+         <script src="js/script.js"></script>
       </main >
    )
 }

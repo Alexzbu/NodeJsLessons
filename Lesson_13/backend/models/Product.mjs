@@ -8,7 +8,7 @@ const productSchema = new Schema({
     type: String,
     required: [true, 'Name is required'],
     minlength: [2, 'Name must be at least 2 characters long'],
-    maxlength: [30, 'Name must be at most 30 characters long'],
+    maxlength: [50, 'Name must be at most 50 characters long'],
   },
   price: {
     type: Number,

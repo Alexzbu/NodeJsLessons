@@ -29,6 +29,10 @@ const userSchema = new Schema({
             'The password must contain at least one letter, one number, one special and at least 8 characters.',
       },
    },
+   type: {
+      type: Schema.Types.ObjectId,
+      ref: 'Type',
+   },
 })
 
 async function hashPassword(password) {

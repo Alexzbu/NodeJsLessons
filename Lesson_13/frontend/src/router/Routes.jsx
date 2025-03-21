@@ -15,37 +15,36 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
    return isAuthenticated ? children : <Navigate to="/login" />
 }
 
-const AppRoutes = ({ isAuthenticated, setIsAuthenticated, userId, productList, setProductList, setAdd, setDel }) => {
+const AppRoutes = ({ user, setToken, productList, setProductList, setAdd, setDel }) => {
    return (
       <Routes>
          <Route path="/" element={<MainPage />} />
-         <Route path="/catalog" element={<Catalog isAuthenticated={isAuthenticated} />} />
+         <Route path="/catalog" element={<Catalog user={user} />} />
          <Route path="/cart"
             element={
                <Cart
-                  isAuthenticated={isAuthenticated}
-                  userId={userId}
+                  user={user}
                   productList={productList}
                   setProductList={setProductList}
                   setAdd={setAdd}
                   setDel={setDel}
                />}
          />
-         <Route path="/productCard/:id" element={<ProductCard userId={userId} setAdd={setAdd} />} />
+         <Route path="/productCard/:id" element={<ProductCard user={user} setAdd={setAdd} />} />
          <Route path="/addProduct/:id?"
             element={
                // <ProtectedRoute isAuthenticated={isAuthenticated}>
                <AddProductForm />
                // </ProtectedRoute>
             } />
-         <Route path="/props" element={<Props isAuthenticated={isAuthenticated} />} />
+         <Route path="/props" element={<Props user={user} />} />
          <Route path="/addProps/:id?/:title"
             element={
                // <ProtectedRoute isAuthenticated={isAuthenticated}>
                <AddPropsForm />
                // </ProtectedRoute>
             } />
-         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+         <Route path="/login" element={<Login setToken={setToken} />} />
          <Route path="/register" element={<Register />} />
       </Routes>
    );

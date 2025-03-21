@@ -14,8 +14,7 @@ class UserController {
 		}
 
 		try {
-			const userData = req.body
-			await UserService.addNewUser(userData)
+			await UserService.addNewUser(req)
 			res.status(200).json({ success: true })
 		} catch (error) {
 			res.status(500).json({ username: 'User with this E-Mail already exists' })

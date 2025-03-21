@@ -11,6 +11,7 @@ const tokenKey = config.tokenSecret // Save in .env !!!
 // Функція для парсингу Bearer токена та декодування користувача
 export function parseBearer(bearer, headers) {
   let token
+
   // Перевіряємо, чи токен починається з 'Bearer '
   if (bearer.startsWith('Bearer ')) {
     token = bearer.slice(7) // Видаляємо 'Bearer ' з початку токена

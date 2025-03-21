@@ -6,8 +6,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import apiServer from '../../api/indexApi'
+import { toast } from "react-hot-toast"
 
-const ProductCard = ({ userId, setAdd }) => {
+const ProductCard = ({ user, setAdd }) => {
    const { id = '' } = useParams()
    const [loading, setLoading] = useState(false)
    const [productId, setProductId] = useState('')
@@ -79,11 +80,17 @@ const ProductCard = ({ userId, setAdd }) => {
    }, [name])
 
    const addProductToCart = async () => {
+
+      if (!user) {
+         toast('Please sign in to add this product to your cart')
+         return
+      }
       try {
          setLoading(true)
          const response = await apiServer.post(`/cart/add`, {
-            params: { productId, userId }
+            params: { productId, userId: user.id }
          })
+         toast.success('This product was added to your cart')
          setLoading(false)
          setAdd((prev) => !prev)
       } catch (error) {

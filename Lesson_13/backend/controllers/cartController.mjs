@@ -39,7 +39,6 @@ class CartController {
     const userId = req.body.params.userId
     const productId = req.body.params.productId
     try {
-      console.log(userId)
       await CartService.deleteProduct(userId, productId)
       res.status(200).json({ message: 'successful' })
     } catch (err) {

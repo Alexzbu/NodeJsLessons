@@ -16,7 +16,6 @@ class AuthController {
       const user = await UserService.getUserByName({
         username: req.body.username,
       })
-
       if (!user) {
         return res.status(401).json({ password: 'Incorrect username or password.' })
       }
@@ -24,10 +23,12 @@ class AuthController {
       if (!await user.validPassword(req.body.password)) {
         return res.status(401).json({ password: 'Incorrect username or password.' })
       }
+
       const token = prepareToken(
         {
           id: user._id,
           username: user.username,
+          role: user.type.title
         },
         req.headers
       )

@@ -5,51 +5,57 @@ import AppRoutes from './router/Routes'
 import Footer from './components/Footer'
 import { jwtDecode } from 'jwt-decode'
 import apiServer from './api/indexApi'
+import ScrollToTop from './components/ScrollToTop'
+import MyToaster from './components/Toaster'
+import { slideToggle } from './utils/spollers/slideToggle.mjs'
 
 const App = () => {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [username, setUsername] = useState('')
-  const [userId, setUserId] = useState('')
+  const [token, setToken] = useState(localStorage.getItem('jwt_token'))
+  const [user, setUser] = useState(null)
   const [productList, setProductList] = useState([])
   const [add, setAdd] = useState(false)
   const [del, setDel] = useState(false)
 
   useEffect(() => {
+    slideToggle()
     const checkAuth = () => {
-      const token = localStorage.getItem('jwt_token')
       if (token) {
         try {
           const decoded = jwtDecode(token);
           if (decoded.exp * 1000 > Date.now()) {
-            setIsAuthenticated(true)
-            setUsername(decoded.username)
-            setUserId(decoded.id)
+            setUser(
+              {
+                id: decoded.id,
+                name: decoded.username,
+                role: decoded.role
+              }
+            )
             apiServer.defaults.headers.common['Authorization'] = `Bearer ${token}`
           } else {
             localStorage.removeItem('jwt_token')
-            setIsAuthenticated(false)
             apiServer.defaults.headers.common['Authorization'] = `Bearer`
           }
         } catch (error) {
           console.error('Invalid token', error);
           localStorage.removeItem('jwt_token');
-          setIsAuthenticated(false);
         }
+      } else {
+        setUser(null)
       }
     }
 
     checkAuth()
 
-  }, [])
+  }, [token])
 
   useEffect(() => {
-    if (userId) {
+    if (user) {
       const fetchData = async () => {
         try {
           const response = await apiServer.get('/cart', {
-            params: { userId }
-          });
+            params: { userId: user.id }
+          })
           setProductList(response.data.productList)
         } catch (error) {
           console.error('Error fetching data:', error)
@@ -58,20 +64,20 @@ const App = () => {
 
       fetchData()
     }
-  }, [userId, add, del])
+  }, [user, add, del])
 
   return (
-    <Router>
+    <Router basename="/">
+      <ScrollToTop />
+      <MyToaster />
       <Header
-        isAuthenticated={isAuthenticated}
-        username={username}
-        setIsAuthenticated={setIsAuthenticated}
+        user={user}
+        setToken={setToken}
         productList={productList}
       />
       <AppRoutes
-        isAuthenticated={isAuthenticated}
-        setIsAuthenticated={setIsAuthenticated}
-        userId={userId}
+        user={user}
+        setToken={setToken}
         productList={productList}
         setProductList={setProductList}
         setAdd={setAdd}

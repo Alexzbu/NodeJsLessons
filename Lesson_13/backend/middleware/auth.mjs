@@ -22,8 +22,10 @@ const auth = (app) => {
     const openPathes = [
       /^\/api\/auth\/login$/,
       /^\/api\/auth\/signup$/,
-      /^\/api\/cars$/,
-      /^\/api\/cars\/details\/[0-9a-fA-F]{24}$/,
+      /^\/api\/products$/,
+      /^\/api\/products\/props(\?.*)?$/,
+      /^\/api\/props\/[a-z]+$/,
+      /^\/api\/products\/details\/[0-9a-fA-F]{24}$/,
       /^\/api\/locations$/
     ]
 

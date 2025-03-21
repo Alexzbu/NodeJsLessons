@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import apiServer from '../../api/indexApi'
+import { toast } from "react-hot-toast"
 
 const AddProductForm = () => {
    const { id = '' } = useParams()
@@ -17,7 +18,7 @@ const AddProductForm = () => {
    const [size, setSize] = useState('')
    const [categorys, setCategorys] = useState([])
    const [category, setCategory] = useState('')
-   const [errors, setErrors] = useState({})
+   // const [errors, setErrors] = useState({})
    const navigate = useNavigate()
    const [images, setImages] = useState([]);
 
@@ -128,8 +129,12 @@ const AddProductForm = () => {
          if (response.status === 200) {
             navigate('/catalog')
          }
+
       } catch (error) {
-         setErrors(error.response.data)
+         if (error.response.status === 401 || 403) {
+            toast.error('Access Denied')
+         }
+         // setErrors(error.response.data)
          console.error('Error adding product:', error)
       }
    };

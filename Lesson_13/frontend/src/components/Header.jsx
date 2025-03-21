@@ -1,12 +1,12 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import apiServer from '../api/indexApi';
 
-const Header = ({ isAuthenticated, setIsAuthenticated, productList }) => {
+const Header = ({ user, setToken, productList }) => {
    const navigate = useNavigate();
 
    const handleLogout = () => {
       localStorage.removeItem('jwt_token')
-      setIsAuthenticated(false)
+      setToken('')
       apiServer.defaults.headers.common['Authorization'] = `Bearer`
       navigate('/catalog');
    };
@@ -40,7 +40,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated, productList }) => {
                <input className="search-form__input" placeholder="Search" type="search" />
             </form>
             <div className="header__action action-header">
-               {isAuthenticated ? (
+               {user ? (
                   <>
                      <NavLink to="#" className="action-header__item _icon-favorite"></NavLink>
                      <NavLink className="action-header__item _icon-user" onClick={handleLogout}></NavLink>
@@ -53,8 +53,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated, productList }) => {
                   </>
                ) : (
                   <>
-                     <NavLink to="/login" className="button">Sign in</NavLink>
-                     <NavLink to="/register" className="button">Sign up</NavLink>
+                     <NavLink to="/login" className="button button--white">Sign in</NavLink>
                   </>
                )}
             </div>
