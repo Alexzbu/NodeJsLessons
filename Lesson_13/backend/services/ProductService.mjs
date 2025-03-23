@@ -2,7 +2,7 @@ import Product from '../models/Product.mjs'
 
 class ProductService {
   static async getProductsList(reqQuery) {
-    const { name = '', sort = '_id', category = '', color = '', size = '', brand = '', priceFrom = 0, priceTo = 1000, page = 0, limit = 20 } = reqQuery;
+    const { name = '', color = '', sort = '_id', filter = {}, page = 0, limit = 20 } = reqQuery;
     try {
       const pipeline = [
         {
@@ -46,8 +46,8 @@ class ProductService {
         {
           $match: {
             price: {
-              $gte: Number(priceFrom),
-              $lte: Number(priceTo)
+              $gte: Number(filter.priceFrom || 0),
+              $lte: Number(filter.priceTo || 1000)
             },
           }
         },
@@ -56,10 +56,10 @@ class ProductService {
       if (name && color) {
         pipeline.push({ $match: { 'name': name, 'color.name': color } })
       }
-      if (category) { pipeline.push({ $match: { 'category.name': category } }) }
-      if (color) { pipeline.push({ $match: { 'color.name': color } }) }
-      if (size) { pipeline.push({ $match: { 'size.name': size } }) }
-      if (brand) { pipeline.push({ $match: { 'brand.name': brand } }) }
+      if (filter.category) { pipeline.push({ $match: { 'category.name': { $in: filter.category } } }) }
+      if (filter.color) { pipeline.push({ $match: { 'color.name': { $in: filter.color } } }) }
+      if (filter.size) { pipeline.push({ $match: { 'size.name': { $in: filter.size } } }) }
+      if (filter.brand) { pipeline.push({ $match: { 'brand.name': { $in: filter.brand } } }) }
 
       pipeline.push({ $project: { name: 1, price: 1, image: 1 } });
       pipeline.push({ $sort: { [sort]: 1 } });

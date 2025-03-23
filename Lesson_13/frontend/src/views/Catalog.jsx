@@ -9,16 +9,11 @@ import { filterSpoller } from '../utils/spollers/filterSpoller.mjs'
 
 const Catalog = ({ user }) => {
    const [products, setProducts] = useState([])
+   const [filter, setFilter] = useState({})
    const [categories, setCategories] = useState([])
-   const [category, setCategory] = useState('')
-   const [priceFrom, setPriceFrom] = useState('0')
-   const [priceTo, setPriceTo] = useState('1000')
    const [colors, setColors] = useState([])
-   const [color, setColor] = useState('')
    const [sizes, setSizes] = useState([])
-   const [size, setSize] = useState('')
    const [brands, setBrands] = useState([])
-   const [brand, setBrand] = useState('')
    const [loading, setLoading] = useState(false)
 
    // useEffect(() => {
@@ -61,7 +56,7 @@ const Catalog = ({ user }) => {
          try {
             setLoading(true)
             const response = await apiServer.get('/products', {
-               params: { category, color, size, brand, priceFrom, priceTo }
+               params: { filter }
             })
             setProducts(response.data)
             const [categoryResponse, colorResponse, sizeResponse, brandResponse] = await Promise.all([
@@ -81,9 +76,9 @@ const Catalog = ({ user }) => {
             setLoading(false);
          }
       }
-      window.scrollTo(0, 0)
       fetchData()
-   }, [category, color, size, brand, priceFrom, priceTo])
+      window.scrollTo(0, 0)
+   }, [filter])
 
    return (
       <main className="page">
@@ -104,11 +99,22 @@ const Catalog = ({ user }) => {
                                  {categories.map((item) => (
                                     <label className="style-filter__item _icon-ch-right" key={item._id}>
                                        <input
-                                          type="radio"
+                                          type="checkbox"
                                           name="category"
                                           className="style-filter__input"
                                           value={item.name}
-                                          onChange={(e) => setCategory(e.target.value)}
+                                          checked={filter?.category?.includes(item.name) || false}
+                                          onChange={(e) => {
+                                             setFilter((previous) => {
+                                                const isSelected = previous?.category?.includes(e.target.value);
+                                                return {
+                                                   ...previous,
+                                                   category: isSelected
+                                                      ? previous.category.filter((cat) => cat !== e.target.value) // Remove if already selected
+                                                      : [...(previous.category || []), e.target.value], // Add if not selected
+                                                };
+                                             });
+                                          }}
                                        />
                                        {item.name}
                                     </label>
@@ -129,16 +135,16 @@ const Catalog = ({ user }) => {
                                        name="price-from"
                                        placeholder='0'
                                        className="price-filter__input price-filter__input--from"
-                                       // value={priceFrom}
-                                       onChange={(e) => setPriceFrom(e.target.value)}
+                                    // value={priceFrom}
+                                    // onChange={(e) => setPriceFrom(e.target.value)}
                                     />
                                     <input
                                        type="text"
                                        name="price-to"
                                        placeholder='1000'
                                        className="price-filter__input price-filter__input--to"
-                                       // value={priceTo}
-                                       onChange={(e) => setPriceTo(e.target.value)}
+                                    // value={priceTo}
+                                    // onChange={(e) => setPriceTo(e.target.value)}
                                     />
                                  </div>
                               </div>
@@ -153,11 +159,22 @@ const Catalog = ({ user }) => {
                                  {colors.map((item) => (
                                     <label style={{ '--color': item.name }} className="colors-filter__item" key={item._id}>
                                        <input
-                                          type="radio"
+                                          type="checkbox"
                                           name="color"
                                           className="colors-filter__input"
                                           value={item.name}
-                                          onChange={(e) => setColor(e.target.value)}
+                                          checked={filter?.color?.includes(item.name) || false}
+                                          onChange={(e) => {
+                                             setFilter((previous) => {
+                                                const isSelected = previous?.color?.includes(e.target.value);
+                                                return {
+                                                   ...previous,
+                                                   color: isSelected
+                                                      ? previous.color.filter((cat) => cat !== e.target.value) // Remove if already selected
+                                                      : [...(previous.color || []), e.target.value], // Add if not selected
+                                                };
+                                             });
+                                          }}
                                        />
                                        {item.name}
                                     </label>
@@ -174,11 +191,22 @@ const Catalog = ({ user }) => {
                                  {sizes.map((item) => (
                                     <label className="size-filter__item" key={item._id}>
                                        <input
-                                          type="radio"
+                                          type="checkbox"
                                           name="size"
                                           className="size-filter__input"
                                           value={item.name}
-                                          onChange={(e) => setSize(e.target.value)}
+                                          checked={filter?.size?.includes(item.name) || false}
+                                          onChange={(e) => {
+                                             setFilter((previous) => {
+                                                const isSelected = previous?.size?.includes(e.target.value);
+                                                return {
+                                                   ...previous,
+                                                   size: isSelected
+                                                      ? previous.size.filter((cat) => cat !== e.target.value) // Remove if already selected
+                                                      : [...(previous.size || []), e.target.value], // Add if not selected
+                                                };
+                                             });
+                                          }}
                                        />
                                        {item.name}
                                     </label>
@@ -196,10 +224,21 @@ const Catalog = ({ user }) => {
                                     <label className="style-filter__item _icon-ch-right" key={item._id}>
                                        <input
                                           type="checkbox"
-                                          name="style[]"
+                                          name="brand"
                                           className="style-filter__input"
                                           value={item.name}
-                                          onChange={(e) => setBrand(e.target.value)}
+                                          checked={filter?.brand?.includes(item.name) || false}
+                                          onChange={(e) => {
+                                             setFilter((previous) => {
+                                                const isSelected = previous?.brand?.includes(e.target.value);
+                                                return {
+                                                   ...previous,
+                                                   brand: isSelected
+                                                      ? previous.brand.filter((cat) => cat !== e.target.value) // Remove if already selected
+                                                      : [...(previous.brand || []), e.target.value], // Add if not selected
+                                                };
+                                             });
+                                          }}
                                        />
                                        {item.name}
                                     </label>
@@ -210,6 +249,33 @@ const Catalog = ({ user }) => {
                      </form>
                   </aside>
                   <div className="catalog__body">
+                     {filter && Object.values(filter).some(arr => arr.length > 0) &&
+                        <div className="catalog__filter-reset filter-reset">
+                           <ul className="filter-reset__items items">
+                              {Object.entries(filter).flatMap(([key, values]) =>
+                                 values.map((item, index) => (
+                                    <li key={`${key}-${index}`} className="items__item">
+                                       <button
+                                          className="items__button _icon-close"
+                                          onClick={() => setFilter((prev) => ({
+                                             ...prev,
+                                             [key]: prev[key].filter((f) => f !== item) // Remove item from array
+                                          }))}
+                                       >
+                                          {item}
+                                       </button>
+                                    </li>
+                                 ))
+                              )}
+                           </ul>
+                           <div className="filter-reset__reset reset">
+                              <button className="reset__button _icon-close"
+                                 onClick={() => setFilter({})}
+                              >Reset
+                              </button>
+                           </div>
+                        </div>
+                     }
                      {user?.role === userType.ADMIN &&
                         <Link to="/addProduct" className="catalog__add-button button">Add procuct</Link>
                      }
