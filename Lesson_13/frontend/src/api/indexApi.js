@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 const apiServer = axios.create({
-   baseURL: 'http://localhost:8080/api/' || 'https://euphoria-back.onrender.com/api/',
+   baseURL: process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_DEV_API_URL
+      : process.env.REACT_APP_PROD_API_URL,
    headers: {
       'Content-Type': 'application/json',
-      // 'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
    },
 });
 
