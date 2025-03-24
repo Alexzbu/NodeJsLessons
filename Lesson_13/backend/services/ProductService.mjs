@@ -2,7 +2,7 @@ import Product from '../models/Product.mjs'
 
 class ProductService {
   static async getProductsList(reqQuery) {
-    const { name = '', color = '', sort = '_id', filter = {}, page = 0, limit = 20 } = reqQuery;
+    const { name = '', color = '', sort = '_id', filter = {}, search = '', page = 0, limit = 20 } = reqQuery;
     try {
       const pipeline = [
         {
@@ -55,6 +55,19 @@ class ProductService {
 
       if (name && color) {
         pipeline.push({ $match: { 'name': name, 'color.name': color } })
+      }
+      if (search) {
+        pipeline.push({
+          $match: {
+            $or: [
+              { 'name': { $regex: new RegExp(search, 'i') } },
+              { 'category.name': { $regex: new RegExp(search, 'i') } },
+              { 'color.name': { $regex: new RegExp(search, 'i') } },
+              { 'size.name': { $regex: new RegExp(search, 'i') } },
+              { 'brand.name': { $regex: new RegExp(search, 'i') } }
+            ]
+          }
+        });
       }
       if (filter.category) { pipeline.push({ $match: { 'category.name': { $in: filter.category } } }) }
       if (filter.color) { pipeline.push({ $match: { 'color.name': { $in: filter.color } } }) }

@@ -13,6 +13,7 @@ const App = () => {
 
   const [token, setToken] = useState(localStorage.getItem('jwt_token'))
   const [user, setUser] = useState(null)
+  const [search, setSearch] = useState('')
   const [productList, setProductList] = useState([])
   const [add, setAdd] = useState(false)
   const [del, setDel] = useState(false)
@@ -73,11 +74,13 @@ const App = () => {
       <Header
         user={user}
         setToken={setToken}
+        setSearch={setSearch}
         productList={productList}
       />
       <AppRoutes
         user={user}
         setToken={setToken}
+        search={search}
         productList={productList}
         setProductList={setProductList}
         setAdd={setAdd}

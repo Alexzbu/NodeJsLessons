@@ -7,7 +7,7 @@ import Loading from '../components/Loading'
 import { userType } from '../constants/userType.mjs'
 import { filterSpoller } from '../utils/spollers/filterSpoller.mjs'
 
-const Catalog = ({ user }) => {
+const Catalog = ({ user, search }) => {
    const [products, setProducts] = useState([])
    const [filter, setFilter] = useState({})
    const [categories, setCategories] = useState([])
@@ -56,7 +56,7 @@ const Catalog = ({ user }) => {
          try {
             setLoading(true)
             const response = await apiServer.get('/products', {
-               params: { filter }
+               params: { filter, search }
             })
             setProducts(response.data)
             const [categoryResponse, colorResponse, sizeResponse, brandResponse] = await Promise.all([
@@ -78,7 +78,7 @@ const Catalog = ({ user }) => {
       }
       fetchData()
       window.scrollTo(0, 0)
-   }, [filter])
+   }, [filter, search])
 
    return (
       <main className="page">
@@ -92,7 +92,7 @@ const Catalog = ({ user }) => {
                      <form className="filter__body">
                         <div className="filter__section section-filter">
                            <h5 data-spoller="open" className="section-filter__title title-filter">
-                              <button type="button" className="title-filter__button _icon-ch-down">Category</button>
+                              <button type="button" className="title-filter__button _icon-ch-down">Category {search}</button>
                            </h5>
                            <div className="section-filter__body">
                               <div className="section-filter__style style-filter" >

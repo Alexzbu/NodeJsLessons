@@ -1,15 +1,23 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import apiServer from '../api/indexApi';
+import apiServer from '../api/indexApi'
+import { useLocation } from "react-router-dom"
 
-const Header = ({ user, setToken, productList }) => {
-   const navigate = useNavigate();
+const Header = ({ user, setToken, setSearch, productList }) => {
+   const navigate = useNavigate()
+   const { pathname } = useLocation()
 
    const handleLogout = () => {
       localStorage.removeItem('jwt_token')
       setToken('')
       apiServer.defaults.headers.common['Authorization'] = `Bearer`
-      navigate('/catalog');
-   };
+      navigate('/catalog')
+   }
+
+   const checkPath = () => {
+      if (pathname !== '/catalog') {
+         navigate('/catalog')
+      }
+   }
 
    return (
       <header className="header">
@@ -19,7 +27,7 @@ const Header = ({ user, setToken, productList }) => {
                <nav className="menu__body">
                   <ul className="menu__list">
                      <li className="menu__item">
-                        <NavLink to="/catalog" className="menu__link menu__link--active">Shop</NavLink>
+                        <NavLink to="/catalog" className="menu__link">Shop</NavLink>
                      </li>
                      <li className="menu__item">
                         <NavLink to="#" className="menu__link">Men</NavLink>
@@ -37,7 +45,15 @@ const Header = ({ user, setToken, productList }) => {
                </nav>
             </div>
             <form className="header__search search-form">
-               <input className="search-form__input" placeholder="Search" type="search" />
+               <input
+                  className="search-form__input"
+                  placeholder="Search"
+                  type="search"
+                  onChange={(e) => {
+                     setSearch(e.target.value)
+                     checkPath()
+                  }}
+               />
             </form>
             <div className="header__action action-header">
                {user ? (
