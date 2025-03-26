@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
-// import noUiSlider from 'nouislider'
-// import wNumb from 'wnumb'
 import apiServer from '../api/indexApi'
 import Loading from '../components/Loading'
 import { userType } from '../constants/userType.mjs'
 import { filterSpoller } from '../utils/spollers/filterSpoller.mjs'
+import PriceFilter from '../components/PriceFilter'
 
 const Catalog = ({ user, search }) => {
    const [products, setProducts] = useState([])
@@ -16,39 +15,6 @@ const Catalog = ({ user, search }) => {
    const [brands, setBrands] = useState([])
    const [loading, setLoading] = useState(false)
 
-   // useEffect(() => {
-   //    const filterRange = document.querySelector('.price-filter__range');
-   //    if (filterRange && !filterRange.noUiSlider) {
-   //       const filterRangeFrom = document.querySelector('.price-filter__input--from');
-   //       const filterRangeTo = document.querySelector('.price-filter__input--to');
-
-   //       noUiSlider.create(filterRange, {
-   //          start: [0, 1000],
-   //          connect: true,
-   //          range: {
-   //             'min': 0,
-   //             'max': 1000
-   //          },
-   //          format: wNumb({
-   //             decimals: 0,
-   //             thousand: '',
-   //             prefix: ''
-   //          })
-   //       });
-
-   //       filterRange.noUiSlider.on('update', function (values) {
-   //          filterRangeFrom.value = `${values[0]}`;
-   //          filterRangeTo.value = `${values[1]}`;
-   //       });
-
-   //       filterRangeFrom.addEventListener('change', function () {
-   //          filterRange.noUiSlider.setHandle(0, filterRangeFrom.value);
-   //       });
-   //       filterRangeTo.addEventListener('change', function () {
-   //          filterRange.noUiSlider.setHandle(1, filterRangeTo.value);
-   //       });
-   //    }
-   // }, []);
 
    useEffect(() => {
       filterSpoller()
@@ -59,17 +25,19 @@ const Catalog = ({ user, search }) => {
                params: { filter, search }
             })
             setProducts(response.data)
-            const [categoryResponse, colorResponse, sizeResponse, brandResponse] = await Promise.all([
-               apiServer.get('/props/category'),
-               apiServer.get('/props/color'),
-               apiServer.get('/props/size'),
-               apiServer.get('/props/brand')
-            ]);
+            if (categories.length === 0) {
+               const [categoryResponse, colorResponse, sizeResponse, brandResponse] = await Promise.all([
+                  apiServer.get('/props/category'),
+                  apiServer.get('/props/color'),
+                  apiServer.get('/props/size'),
+                  apiServer.get('/props/brand')
+               ]);
 
-            setCategories(categoryResponse.data);
-            setColors(colorResponse.data);
-            setSizes(sizeResponse.data);
-            setBrands(brandResponse.data);
+               setCategories(categoryResponse.data);
+               setColors(colorResponse.data);
+               setSizes(sizeResponse.data);
+               setBrands(brandResponse.data);
+            }
          } catch (error) {
             console.error('Error fetching data:', error);
          } finally {
@@ -92,7 +60,7 @@ const Catalog = ({ user, search }) => {
                      <form className="filter__body">
                         <div className="filter__section section-filter">
                            <h5 data-spoller="open" className="section-filter__title title-filter">
-                              <button type="button" className="title-filter__button _icon-ch-down">Category {search}</button>
+                              <button type="button" className="title-filter__button _icon-ch-down">Category</button>
                            </h5>
                            <div className="section-filter__body">
                               <div className="section-filter__style style-filter" >
@@ -127,27 +95,7 @@ const Catalog = ({ user, search }) => {
                               <button type="button" className="title-filter__button _icon-ch-down">Price</button>
                            </h5>
                            <div className="section-filter__body">
-                              <div className="section-filter__price price-filter">
-                                 <div className="price-filter__range"></div>
-                                 <div className="price-filter__inputs">
-                                    <input
-                                       type="text"
-                                       name="price-from"
-                                       placeholder='0'
-                                       className="price-filter__input price-filter__input--from"
-                                    // value={priceFrom}
-                                    // onChange={(e) => setPriceFrom(e.target.value)}
-                                    />
-                                    <input
-                                       type="text"
-                                       name="price-to"
-                                       placeholder='1000'
-                                       className="price-filter__input price-filter__input--to"
-                                    // value={priceTo}
-                                    // onChange={(e) => setPriceTo(e.target.value)}
-                                    />
-                                 </div>
-                              </div>
+                              <PriceFilter filter={filter} setFilter={setFilter} />
                            </div>
                         </div>
                         <div className="filter__section section-filter">
@@ -280,7 +228,7 @@ const Catalog = ({ user, search }) => {
                         <Link to="/addProduct" className="catalog__add-button button">Add procuct</Link>
                      }
                      <div className="catalog__header">
-                        <h1 className="catalog__title">Catalog</h1>
+                        <h1 className="catalog__title">{search === 'Men' ? 'Men' : search === 'Women' ? 'Women' : 'Catalog'}</h1>
                         <ul className="catalog__type type-catalog">
                            <li className="type-catalog__item">
                               <button className="type-catalog__button type-catalog__button--active">New</button>
@@ -295,7 +243,7 @@ const Catalog = ({ user, search }) => {
                         {products.map((item) => (
                            < article className="item-product" key={item._id}>
                               <Link to={`/productCard/${item._id}`} className="item-product__picture-link">
-                                 <img src={item.image[0]} className="item-product__image" alt={item.name} />
+                                 <img src={item.image} className="item-product__image" alt={item.name} />
                               </Link>
                               <div className="item-product__body">
                                  <h4 className="item-product__title">

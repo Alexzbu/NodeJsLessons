@@ -994,10 +994,6 @@ textarea {
   font-weight: 500;
   position: relative;
 }
-.menu__link--active {
-  font-weight: 700;
-  color: #3c4242;
-}
 .menu__link::before {
   content: "";
   height: 0.1875rem;
@@ -1021,6 +1017,17 @@ textarea {
   .menu__link {
     font-size: 2rem;
   }
+}
+
+.menu__link.active {
+  font-weight: 700;
+  color: #8a33fd;
+}
+
+.action-header__button.active,
+.action-header__item.active {
+  background-color: #8a33fd;
+  color: #fff;
 }
 
 .search-form {

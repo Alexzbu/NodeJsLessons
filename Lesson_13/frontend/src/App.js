@@ -74,6 +74,7 @@ const App = () => {
       <Header
         user={user}
         setToken={setToken}
+        search={search}
         setSearch={setSearch}
         productList={productList}
       />

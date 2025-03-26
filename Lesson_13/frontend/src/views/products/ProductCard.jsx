@@ -11,27 +11,21 @@ import { toast } from "react-hot-toast"
 const ProductCard = ({ user, setAdd }) => {
    const { id = '' } = useParams()
    const [loading, setLoading] = useState(false)
-   const [productId, setProductId] = useState('')
+   const [product, setProduct] = useState({})
    const [thumbsSwiper, setThumbsSwiper] = useState(null)
-   const [name, setName] = useState('')
-   const [price, setPrice] = useState('')
-   const [description, setDescription] = useState('')
-   const [images, setImages] = useState([])
-   const [colors, setColors] = useState([])
-   const [color, setColor] = useState('')
-   const [sizes, setSizes] = useState([])
+   const [props, setProps] = useState({})
+   const [colorToSearch, setColorToSearch] = useState('')
 
    useEffect(() => {
       const fetchProduct = async () => {
          if (id) {
             try {
                const response = await apiServer.get(`/products/details/${id}`);
-               setProductId(response.data.product._id)
-               setName(response.data.product.name);
-               setPrice(response.data.product.price);
-               setDescription(response.data.product.description);
-               setColor(response.data.product.color.name);
-               setImages(response.data.product.image);
+               setProduct(response.data.product)
+               const propsResponse = await apiServer.get(`/products/props`, {
+                  params: { name: response.data.product.name },
+               })
+               setProps(propsResponse.data[0])
             } catch (error) {
                console.error('Error fetching product data:', error);
             }
@@ -43,15 +37,12 @@ const ProductCard = ({ user, setAdd }) => {
 
    useEffect(() => {
       const fetchProductByColor = async () => {
-         if (color) {
+         if (colorToSearch) {
             try {
-               const response = await apiServer.get(`/products`, {
-                  params: { name, color }
+               const response = await apiServer.get(`/products/details`, {
+                  params: { name: product?.name, color: colorToSearch }
                });
-               setProductId(response.data[0]._id)
-               setName(response.data[0].name);
-               setPrice(response.data[0].price);
-               setImages(response.data[0].image);
+               setProduct(response.data.product)
             } catch (error) {
                console.error('Error fetching product data:', error);
             }
@@ -59,25 +50,7 @@ const ProductCard = ({ user, setAdd }) => {
       }
 
       fetchProductByColor()
-   }, [color])
-
-   useEffect(() => {
-      const fetchProductProps = async () => {
-         if (name) {
-            try {
-               const propsResponse = await apiServer.get(`/products/props`, {
-                  params: { name },
-               });
-               setColors(propsResponse.data[0].colors)
-               setSizes(propsResponse.data[0].sizes)
-            } catch (error) {
-               console.error('Error fetching product props:', error);
-            }
-         }
-      };
-
-      fetchProductProps();
-   }, [name])
+   }, [colorToSearch])
 
    const addProductToCart = async () => {
 
@@ -88,7 +61,7 @@ const ProductCard = ({ user, setAdd }) => {
       try {
          setLoading(true)
          const response = await apiServer.post(`/cart/add`, {
-            params: { productId, userId: user.id }
+            params: { productId: product._id, userId: user.id }
          })
          toast.success('This product was added to your cart')
          setLoading(false)
@@ -115,7 +88,7 @@ const ProductCard = ({ user, setAdd }) => {
                            <span className="breadcrumbs__current">Top</span>
                         </li>
                      </ul>
-                     <h1 className="main-product__title">{name}</h1>
+                     <h1 className="main-product__title">{product?.name}</h1>
                      <div className="main-product__rating-comments">
                         {/* <!-- Rating --> */}
                         <div data-rating="4.5" className="rating">
@@ -146,7 +119,7 @@ const ProductCard = ({ user, setAdd }) => {
                            <a href="#" className="sizes-product__guide _icon-a-right">Size Guide</a>
                         </div>
                         <div className="sizes-product__items">
-                           {sizes.map((item, index) => (
+                           {props?.sizes?.map((item, index) => (
                               <label className="sizes-product__item" key={index}>
                                  {item}
                                  <input type="radio" value={item} className="sizes-product__input" name="product-size" />
@@ -157,15 +130,15 @@ const ProductCard = ({ user, setAdd }) => {
                      <div className="main-product__colors colors-product">
                         <h5 className="colors-product__title">Colours Available</h5>
                         <div className="colors-product__items">
-                           {colors.map((item, index) => (
+                           {props?.colors?.map((item, index) => (
                               <label style={{ '--color': item }} className="colors-product__item" key={index}>
                                  <input
-                                    checked={item === color}
+                                    checked={item === product?.color?.name}
                                     type="radio"
                                     value={item}
                                     className="colors-product__input"
                                     name="product-colors"
-                                    onChange={(e) => setColor(e.target.value)}
+                                    onChange={(e) => setColorToSearch(e.target.value)}
                                  />
                               </label>
                            ))}
@@ -182,7 +155,7 @@ const ProductCard = ({ user, setAdd }) => {
                            >{loading ? "Adding..." : "Add to cart"}
                            </span>
                         </button>
-                        <div className="main-product__price">${price}</div>
+                        <div className="main-product__price">${product?.price}</div>
                      </div>
                      <div className="main-product__info info-product">
                         <div className="info-product__item _icon-credit-cart">Secure payment</div>
@@ -203,7 +176,7 @@ const ProductCard = ({ user, setAdd }) => {
                               speed={800}
                               className="thumb-slider__wrapper swiper-wrapper"
                            >
-                              {images.map((image, index) => (
+                              {product?.image?.map((image, index) => (
                                  <SwiperSlide key={index}>
                                     <div className="thumb-slider__slide">
                                        <img src={image} className="thumb-slider__image" alt="Image" />
@@ -232,7 +205,7 @@ const ProductCard = ({ user, setAdd }) => {
                               }}
                               thumbs={{ swiper: thumbsSwiper }}
                            >
-                              {images.map((image, index) => (
+                              {product?.image?.map((image, index) => (
                                  <SwiperSlide key={index}>
                                     <div className="main-product__slide">
                                        <img src={image} className="main-product__image" alt="Image" />
@@ -267,7 +240,7 @@ const ProductCard = ({ user, setAdd }) => {
                            <div data-tabs-element className="tabs__element">
                               <div className="product-description">
                                  <div className="product-description__text">
-                                    <p>{description}</p>
+                                    <p>{product?.description}</p>
                                  </div>
                                  <div className="product-description__table">
                                     <div className="product-description__item">

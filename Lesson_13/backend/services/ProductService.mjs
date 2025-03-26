@@ -38,11 +38,20 @@ class ProductService {
           }
         },
         {
-          $unwind: '$category',
-          $unwind: '$color',
-          $unwind: '$size',
-          $unwind: '$brand',
+          $lookup: {
+            from: 'sexes',
+            localField: 'sex',
+            foreignField: '_id',
+            as: 'sex',
+          }
         },
+        // {
+        //   $unwind: '$category',
+        //   $unwind: '$color',
+        //   $unwind: '$size',
+        //   $unwind: '$brand',
+        //   $unwind: '$sex',
+        // },
         {
           $match: {
             price: {
@@ -64,7 +73,8 @@ class ProductService {
               { 'category.name': { $regex: new RegExp(search, 'i') } },
               { 'color.name': { $regex: new RegExp(search, 'i') } },
               { 'size.name': { $regex: new RegExp(search, 'i') } },
-              { 'brand.name': { $regex: new RegExp(search, 'i') } }
+              { 'brand.name': { $regex: new RegExp(search, 'i') } },
+              { 'sex.name': search }
             ]
           }
         });
@@ -74,7 +84,7 @@ class ProductService {
       if (filter.size) { pipeline.push({ $match: { 'size.name': { $in: filter.size } } }) }
       if (filter.brand) { pipeline.push({ $match: { 'brand.name': { $in: filter.brand } } }) }
 
-      pipeline.push({ $project: { name: 1, price: 1, image: 1 } });
+      pipeline.push({ $project: { name: 1, price: 1, image: { $arrayElemAt: ["$image", 0] } } });
       pipeline.push({ $sort: { [sort]: 1 } });
       pipeline.push({ $skip: page * limit }, { $limit: limit });
 
@@ -106,10 +116,10 @@ class ProductService {
           }
         },
         {
-          $unwind: "$color"
+          $unwind: '$color'
         },
         {
-          $unwind: "$size"
+          $unwind: '$size'
         },
         {
           $match: { name: { $eq: name } }
@@ -135,8 +145,37 @@ class ProductService {
     return await product.save()
   }
 
-  static async getProductById(id) {
-    return await Product.findById(id).populate('color')
+  static async getprocuctDetails(id, name, color) {
+    try {
+      if (id) {
+        return await Product.findById(id).populate('color')
+      } else {
+        const product = await Product.aggregate(
+          [{
+            $lookup: {
+              from: 'colors',
+              localField: 'color',
+              foreignField: '_id',
+              as: 'color',
+            }
+
+          },
+          {
+            $unwind: '$color',
+
+          },
+          {
+            $match: {
+              'name': name,
+              'color.name': color
+            }
+          }])
+        return product[0]
+      }
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+      throw new Error('Unable to fetch product details.');
+    }
   }
 
   static async updateProduct(id, data) {

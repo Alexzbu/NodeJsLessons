@@ -37,7 +37,7 @@ const NewProductSwiper = () => {
                            <div className="new__slide swiper-slide">
                               <article className="new__item item-new">
                                  <Link href="#" className="item-new__link">
-                                    <img src={`image/new/0${index + 1}.jpg`} className="item-new__image" alt="Image" />
+                                    <img src={`image/new/0${index + 1}.jpg`} className="item-new__image" alt="Slide" />
                                     <h5 className="item-new__title">Knitted Joggers</h5>
                                  </Link>
                               </article>

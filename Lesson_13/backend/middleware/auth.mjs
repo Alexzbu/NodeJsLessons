@@ -25,6 +25,7 @@ const auth = (app) => {
       /^\/api\/products$/,
       /^\/api\/products\/props(\?.*)?$/,
       /^\/api\/props\/[a-z]+$/,
+      /^\/api\/products\/details$/,
       /^\/api\/products\/details\/[0-9a-fA-F]{24}$/,
       /^\/api\/locations$/
     ]

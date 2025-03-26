@@ -5,6 +5,7 @@ import config from '../config/default.mjs'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 import auth from './auth.mjs'
+import { limiter } from './limiter.mjs'
 import passport from '../config/passport.mjs'
 import sessionConfig from '../config/session.mjs'
 import flash from 'connect-flash'
@@ -15,6 +16,7 @@ const __dirname = path.dirname(__filename)
 const middleware = (app) => {
 
   app.use(cors())
+  app.use(limiter)
   auth(app)
   app.set('views', path.join(__dirname, '../views'))
   app.set('view engine', 'ejs')

@@ -2,7 +2,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import apiServer from '../api/indexApi'
 import { useLocation } from "react-router-dom"
 
-const Header = ({ user, setToken, setSearch, productList }) => {
+const Header = ({ user, setToken, search, setSearch, productList }) => {
    const navigate = useNavigate()
    const { pathname } = useLocation()
 
@@ -22,18 +22,33 @@ const Header = ({ user, setToken, setSearch, productList }) => {
    return (
       <header className="header">
          <div className="header__container">
-            <Link to="/"><img className="header__logo" src="/image/logo.svg" alt="Logo" /></Link>
+            <Link onClick={() => setSearch('')} to="/"><img className="header__logo" src="/image/logo.svg" alt="Logo" /></Link>
             <div className="header__menu menu">
                <nav className="menu__body">
                   <ul className="menu__list">
                      <li className="menu__item">
-                        <NavLink to="/catalog" className="menu__link">Shop</NavLink>
+                        <Link
+                           to="/catalog"
+                           className={`menu__link ${search !== 'Men' && search !== 'Women' && pathname === '/catalog' ? 'active' : ''}`}
+                           onClick={() => setSearch('')}
+                        >Catalog
+                        </Link>
                      </li>
                      <li className="menu__item">
-                        <NavLink to="#" className="menu__link">Men</NavLink>
+                        <Link
+                           to="/catalog"
+                           className={`menu__link ${search === 'Men' ? 'active' : ''}`}
+                           onClick={() => setSearch('Men')}
+                        >Men
+                        </Link>
                      </li>
                      <li className="menu__item">
-                        <NavLink to="#" className="menu__link">Women</NavLink>
+                        <Link
+                           to="/catalog"
+                           className={`menu__link ${search === 'Women' ? 'active' : ''}`}
+                           onClick={() => setSearch('Women')}
+                        >Women
+                        </Link>
                      </li>
                      {/* <li className="menu__item">
                         <NavLink to="#" className="menu__link">Combos</NavLink>
@@ -58,8 +73,8 @@ const Header = ({ user, setToken, setSearch, productList }) => {
             <div className="header__action action-header">
                {user ? (
                   <>
-                     <NavLink to="#" className="action-header__item _icon-favorite"></NavLink>
-                     <NavLink className="action-header__item _icon-user" onClick={handleLogout}></NavLink>
+                     <NavLink to="/favorite" className="action-header__item _icon-favorite"></NavLink>
+                     <button className="action-header__item _icon-user" onClick={handleLogout}></button>
                      <NavLink to="/cart" className="action-header__item _icon-cart">
                         {productList.length > 0 && (
                            <span>{productList.reduce((total, item) => total + item.amount, 0)}</span>
@@ -69,13 +84,13 @@ const Header = ({ user, setToken, setSearch, productList }) => {
                   </>
                ) : (
                   <>
-                     <NavLink to="/login" className="button button--white">Sign in</NavLink>
+                     <NavLink to="/login" className="action-header__button button button--white">Sign in</NavLink>
                   </>
                )}
             </div>
             <button className="icon-menu"><span></span></button>
          </div>
-      </header>
+      </header >
    )
 }
 
